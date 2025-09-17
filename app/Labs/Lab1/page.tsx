@@ -1,5 +1,5 @@
+"use client";
 import Image from "next/image";
-("use client");
 
 export default function Lab1() {
   return (
@@ -188,8 +188,8 @@ export default function Lab1() {
           id="wd-teslabot"
           src="/images/teslabot.jpg"
           alt="Tesla Bot"
-          height={200}
-          width={100}
+          height={300}
+          width={400}
         />
       </div>
       <div id="wd-forms">
