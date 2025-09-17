@@ -48,6 +48,45 @@ export default function Assignments() {
             <b>Due</b> Oct 15 at 11:59pm | 100 pts
           </p>
         </li>
+
+        <li className="wd-assignment-list-item">
+          <Link
+            href="/Courses/1234/Assignments/123"
+            className="wd-assignment-link"
+          >
+            A4 - State & Redux
+          </Link>
+          <p>
+            Multiple Modules | <b>Not available until</b> Oct 15 at 12:00am |{" "}
+            <b>Due</b> Oct 29 at 11:59pm | 100 pts
+          </p>
+        </li>
+
+        <li className="wd-assignment-list-item">
+          <Link
+            href="/Courses/1234/Assignments/123"
+            className="wd-assignment-link"
+          >
+            A5 - Node
+          </Link>
+          <p>
+            Multiple Modules | <b>Not available until</b> Oct 29 at 12:00am |{" "}
+            <b>Due</b> Nov 12 at 11:59pm | 100 pts
+          </p>
+        </li>
+
+        <li className="wd-assignment-list-item">
+          <Link
+            href="/Courses/1234/Assignments/123"
+            className="wd-assignment-link"
+          >
+            A6 - MongoDB
+          </Link>
+          <p>
+            Multiple Modules | <b>Not available until</b> Nov 12 at 12:00am |{" "}
+            <b>Due</b> Nov 26 at 11:59pm | 100 pts
+          </p>
+        </li>
       </ul>
     </div>
   );

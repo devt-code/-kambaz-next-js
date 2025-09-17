@@ -4,6 +4,36 @@ import Image from "next/image";
 export default function Lab1() {
   return (
     <div id="wd-lab1">
+      <h2>Student Details</h2>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <b>Name:</b>
+            </td>
+            <td>Deva Sai Sunder Tangella</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Section:</b>
+            </td>
+            <td>05</td>
+          </tr>
+          <tr>
+            <td>
+              <b>GitHub Repo Link:</b>
+            </td>
+            <td>
+              <a
+                href="https://github.com/devt-code/-kambaz-next-js"
+                id="wd-github"
+              >
+                kambaz-next-js
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <h2> Lab1 </h2>
       <h3> HTML Examples </h3>
       <div id="wd-h-tag">
@@ -310,7 +340,7 @@ export default function Lab1() {
           <label htmlFor="wd-text-fields-rating"> Rating: </label>
           <input
             type="range"
-            value="5"
+            value="4"
             max="5"
             placeholder="Doe"
             id="wd-text-fields-rating"
