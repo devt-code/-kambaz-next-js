@@ -1,0 +1,15 @@
+.no-native-icon::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.no-native-icon::-webkit-inner-spin-button,
+.no-native-icon::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.no-native-icon {
+  position: relative;
+  z-index: 1;
+}
