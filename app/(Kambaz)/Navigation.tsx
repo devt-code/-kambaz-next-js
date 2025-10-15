@@ -8,6 +8,7 @@ import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { usePathname } from "next/navigation";
 
 import Link from "next/link";
+import Image from "next/image";
 export default function KambazNavigation() {
   const pathname = usePathname();
   const links = [
@@ -31,10 +32,12 @@ export default function KambazNavigation() {
         href="https://www.northeastern.edu/"
         id="wd-neu-link"
       >
-        <img
+        <Image
           src="/images/NEU2.png"
-          width="75px"
+          width={75}
+          height={58.2}
           alt="Northeastern University"
+          priority
         />
       </ListGroupItem>
       <ListGroupItem
@@ -57,7 +60,7 @@ export default function KambazNavigation() {
       </ListGroupItem>
       {links.map((link) => (
         <ListGroupItem
-          key={link.path}
+          key={link.label}
           as={Link}
           href={link.path}
           className={`bg-black text-center border-0
