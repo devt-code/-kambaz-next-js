@@ -36,6 +36,34 @@ export default function Lab3() {
   console.log("Hello World!");
   return (
     <div id="wd-lab3">
+      <h2 className="mb-4">Student Details</h2>
+      <table className="table table-bordered table-striped w-75">
+        <tbody>
+          <tr>
+            <th scope="row" className="w-25">
+              Name:
+            </th>
+            <td>Deva Sai Sunder Tangella</td>
+          </tr>
+          <tr>
+            <th scope="row">Section:</th>
+            <td>05</td>
+          </tr>
+          <tr>
+            <th scope="row">GitHub Repo Link:</th>
+            <td>
+              <a
+                href="https://github.com/devt-code/-kambaz-next-js/tree/a3"
+                id="wd-github"
+                className="text-decoration-none"
+                target="_blank"
+              >
+                kambaz-next-js branch a3
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <h3>Lab 3</h3>
       <VariablesAndConstants />
       <VariableTypes />
