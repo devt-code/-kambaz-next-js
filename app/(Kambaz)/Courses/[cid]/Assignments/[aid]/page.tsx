@@ -158,7 +158,7 @@ export default function AssignmentEditor() {
                     <InputGroup>
                       <Form.Control
                         type="datetime-local"
-                        defaultValue=""
+                        defaultValue="2024-05-13T23:59"
                         className="no-native-icon"
                       />
                       <InputGroup.Text>
