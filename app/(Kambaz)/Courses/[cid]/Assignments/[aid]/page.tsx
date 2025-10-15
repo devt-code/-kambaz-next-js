@@ -1,57 +1,66 @@
 "use client";
 import React from "react";
+import { useParams } from "next/navigation";
+import * as db from "../../../../Database";
+
+import Link from "next/link";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Card, FormGroup, FormLabel, InputGroup } from "react-bootstrap";
-import Calendar from "@/app/(Kambaz)/Calendar/page";
 import { AiOutlineCalendar, AiOutlineClose } from "react-icons/ai";
 import "./DateInput.css";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find((a) => a._id === aid);
+
+  if (!assignment) return <div>Assignment not found</div>;
+
   return (
     <div className="container text-left" style={{ maxWidth: "90%" }}>
       <Form className="p-3" id="wd-assignments-editor">
         <FormGroup className="mb-3">
           <FormLabel>Assignment Name</FormLabel>
-          <Form.Control defaultValue="A1" />
+          <Form.Control defaultValue={assignment.title} />
         </FormGroup>
+
         <Form.Group className="mb-3">
-          <div>
-            <Card className="border-grey">
-              <Card.Body contentEditable="true">
-                <p>
-                  The assignment is{" "}
-                  <span className="text-danger">available online</span>
-                </p>
-                <p>
-                  Submit a link to the landing page of your Web application
-                  running on Netlify.
-                </p>
-                <p>The landing page should include the following:</p>
-                <ul>
-                  <li>Your full name and section</li>
-                  <li>Links to each of the lab assignments</li>
-                  <li>Link to the Kambaz application</li>
-                  <li>Links to all relevant source code repositories</li>
-                </ul>
-                <p>
-                  The Kambaz application should include a link to navigate back
-                  to the landing page.
-                </p>
-              </Card.Body>
-            </Card>
-          </div>
+          <Card className="border-grey">
+            <Card.Body contentEditable="true">
+              <p>
+                The assignment is{" "}
+                <span className="text-danger">available online</span>
+              </p>
+              <p>
+                Submit a link to the landing page of your Web application
+                running on Netlify.
+              </p>
+              <p>The landing page should include the following:</p>
+              <ul>
+                <li>Your full name and section</li>
+                <li>Links to each of the lab assignments</li>
+                <li>Link to the Kambaz application</li>
+                <li>Links to all relevant source code repositories</li>
+              </ul>
+              <p>
+                The Kambaz application should include a link to navigate back to
+                the landing page.
+              </p>
+            </Card.Body>
+          </Card>
         </Form.Group>
+
         <FormGroup as={Row} className="mb-3 text-end">
           <FormLabel column sm={2}>
             Points
           </FormLabel>
           <Col sm={10}>
-            <Form.Control defaultValue={100} />
+            <Form.Control defaultValue={assignment.points} />
           </Col>
         </FormGroup>
+
         <FormGroup as={Row} className="mb-3 text-end">
           <FormLabel column sm={2}>
             Assignment Group
@@ -65,6 +74,7 @@ export default function AssignmentEditor() {
             </Form.Select>
           </Col>
         </FormGroup>
+
         <FormGroup as={Row} className="mb-3 text-end">
           <FormLabel column sm={2}>
             Display Grade as
@@ -77,6 +87,7 @@ export default function AssignmentEditor() {
             </Form.Select>
           </Col>
         </FormGroup>
+
         <FormGroup as={Row} className="mb-4">
           <FormLabel column sm={2} className="text-end">
             Submission Type
@@ -96,6 +107,7 @@ export default function AssignmentEditor() {
             </div>
           </Col>
         </FormGroup>
+
         <FormGroup as={Row} className="mb-4">
           <FormLabel column sm={2} className="text-end">
             Assign
@@ -117,6 +129,7 @@ export default function AssignmentEditor() {
                   </span>
                 </div>
               </FormGroup>
+
               <FormGroup className="mb-3">
                 <FormLabel>
                   <strong>Due</strong>
@@ -124,7 +137,7 @@ export default function AssignmentEditor() {
                 <InputGroup>
                   <Form.Control
                     type="datetime-local"
-                    defaultValue="2024-05-13T23:59"
+                    defaultValue={assignment.dueDate}
                     className="no-native-icon"
                   />
                   <InputGroup.Text>
@@ -132,6 +145,7 @@ export default function AssignmentEditor() {
                   </InputGroup.Text>
                 </InputGroup>
               </FormGroup>
+
               <Row>
                 <Col sm={6}>
                   <FormGroup className="mb-3">
@@ -141,7 +155,7 @@ export default function AssignmentEditor() {
                     <InputGroup>
                       <Form.Control
                         type="datetime-local"
-                        defaultValue="2024-05-06T00:00"
+                        defaultValue={assignment.fromDate}
                         className="no-native-icon"
                       />
                       <InputGroup.Text>
@@ -158,7 +172,7 @@ export default function AssignmentEditor() {
                     <InputGroup>
                       <Form.Control
                         type="datetime-local"
-                        defaultValue=""
+                        defaultValue={assignment.until}
                         className="no-native-icon"
                       />
                       <InputGroup.Text>
@@ -171,9 +185,14 @@ export default function AssignmentEditor() {
             </div>
           </Col>
         </FormGroup>
+
         <div className="d-flex justify-content-end gap-2">
-          <Button variant="secondary">Cancel</Button>
-          <Button variant="danger">Save</Button>
+          <Link href={`/Courses/${cid}/Assignments`}>
+            <Button variant="secondary">Cancel</Button>
+          </Link>
+          <Link href={`/Courses/${cid}/Assignments`}>
+            <Button variant="danger">Save</Button>
+          </Link>
         </div>
       </Form>
     </div>
