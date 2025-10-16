@@ -27,7 +27,7 @@ export default function CourseNavigation() {
             ? `/Courses/${cid}/People/Table`
             : `/Courses/${cid}/${link}`;
 
-        const isActive = pathname === href;
+        const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
         return (
           <Link
