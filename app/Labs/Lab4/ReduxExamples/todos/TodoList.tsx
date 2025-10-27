@@ -3,7 +3,7 @@ import TodoForm from "./TodoForm";
 import TodoItem from "./TodoItem";
 import { useSelector } from "react-redux";
 import { ListGroup } from "react-bootstrap";
-import { RootState } from "../../store/page";
+import { RootState } from "../../store/store";
 
 export default function TodoList() {
   const todos = useSelector((state: RootState) => state.todosReducer.todos);

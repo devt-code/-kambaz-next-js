@@ -1,17 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, FormControl, InputGroup } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
-import { useDispatch } from "react-redux";
-import { setCurrentUser } from "@/app/(Kambaz)/Account/reducer";
 import { redirect, useParams } from "next/navigation";
-import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export default function AssignmentsControls() {
-  const [credentials, setCredentials] = useState<any>({});
-  const dispatch = useDispatch();
   const { cid } = useParams();
   const assignmentEditor = () => {
     const aid = uuidv4();

@@ -12,7 +12,7 @@ import ArrayStateVariable from "./ArrayStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
 import ReduxExamples from "./ReduxExamples/page";
 import HelloRedux from "./ReduxExamples/HelloRedux/page";
-import store from "./store/page";
+import store from "./store/store";
 import { Provider } from "react-redux";
 import CounterRedux from "./ReduxExamples/CounterRedux/page";
 import AddRedux from "./ReduxExamples/AddRedux/page";

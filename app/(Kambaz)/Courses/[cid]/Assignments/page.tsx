@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useParams } from "next/navigation";
-import * as db from "../../../Database";
 
 import Link from "next/link";
 import AssignmentsControls from "./AssignmentsControls";

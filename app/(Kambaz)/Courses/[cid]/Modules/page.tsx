@@ -98,7 +98,7 @@ export default function Modules() {
                     />
                   )}
                   <ModuleControlButtons
-                    moduleId={module._id}
+                    moduleId={module._id as string}
                     deleteModule={(moduleId) => {
                       dispatch(deleteModule(moduleId));
                     }}
