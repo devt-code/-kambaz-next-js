@@ -1,22 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useParams } from "next/navigation";
 import * as db from "../../../Database";
 
 import Link from "next/link";
-import ModulesControls from "./ModulesControls";
+import AssignmentsControls from "./AssignmentsControls";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { IoMdArrowDropdown } from "react-icons/io";
 
-import LessonControlButtons from "./LessonControlButtons";
-import ModuleControlButtons from "./ModuleControlButtons";
+import AssignmentListControlButtons from "./AssignmentListControlButtons";
+import AssignmentsControlButtons from "./AssignmentsControlButtons";
 import AssignmentIcon from "./AssignmentIcon";
 
 import "../../../styles.css";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAssignment } from "./reducer";
+import { ParamValue } from "next/dist/server/request/params";
+import {
+  Key,
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+} from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const assignments = useSelector(
+    (state: any) => state.assignmentReducer.assignments || []
+  );
 
   const formatDate = (isoString: string | number | Date) => {
     if (!isoString) return "—";
@@ -32,9 +45,11 @@ export default function Assignments() {
       .replace(",", " at");
   };
 
+  const dispatch = useDispatch();
+
   return (
     <div id="wd-assignments">
-      <ModulesControls />
+      <AssignmentsControls />
       <br />
       <br />
       <br />
@@ -47,41 +62,96 @@ export default function Assignments() {
               <IoMdArrowDropdown className="me-2 fs-3" />
               <span>ASSIGNMENTS</span>
             </div>
-            <ModuleControlButtons />
+            <AssignmentsControlButtons />
           </div>
         </ListGroupItem>
 
         {assignments
-          .filter((assignment) => assignment.course === cid)
-          .map((assignment) => (
-            <ListGroupItem
-              key={assignment._id}
-              className="d-flex align-items-center p-3 ps-1 wd-assignment"
-            >
-              <BsGripVertical className="me-2 fs-3" />
-              <AssignmentIcon />
-              <div className="flex-grow-1">
-                <div>
-                  <Link
-                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                    className="wd-assignment-link text-black"
+          .filter(
+            (assignment: { course: ParamValue }) => assignment.course === cid
+          )
+          .map(
+            (assignment: {
+              _id: Key | null | undefined;
+              title:
+                | string
+                | number
+                | bigint
+                | boolean
+                | ReactElement<unknown, string | JSXElementConstructor<any>>
+                | Iterable<ReactNode>
+                | ReactPortal
+                | Promise<
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | ReactPortal
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | null
+                    | undefined
                   >
-                    {assignment.title}
-                  </Link>
+                | null
+                | undefined;
+              fromDate: string | number | Date;
+              dueDate: string | number | Date;
+              points:
+                | string
+                | number
+                | bigint
+                | boolean
+                | ReactElement<unknown, string | JSXElementConstructor<any>>
+                | Iterable<ReactNode>
+                | ReactPortal
+                | Promise<
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | ReactPortal
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | null
+                    | undefined
+                  >
+                | null
+                | undefined;
+            }) => (
+              <ListGroupItem
+                key={assignment._id}
+                className="d-flex align-items-center p-3 ps-1 wd-assignment"
+              >
+                <BsGripVertical className="me-2 fs-3" />
+                <AssignmentIcon />
+                <div className="flex-grow-1">
+                  <div>
+                    <Link
+                      href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="wd-assignment-link text-black"
+                    >
+                      {assignment.title}
+                    </Link>
+                  </div>
+                  <div className="small">
+                    <span className="text-danger">Multiple Modules</span> |{" "}
+                    <span>Not available until</span>{" "}
+                    {formatDate(assignment.fromDate)}
+                  </div>
+                  <div className="small">
+                    <span>Due</span> {formatDate(assignment.dueDate)} |{" "}
+                    {assignment.points} pts
+                  </div>
                 </div>
-                <div className="small">
-                  <span className="text-danger">Multiple Modules</span> |{" "}
-                  <span>Not available until</span>{" "}
-                  {formatDate(assignment.fromDate)}
-                </div>
-                <div className="small">
-                  <span>Due</span> {formatDate(assignment.dueDate)} |{" "}
-                  {assignment.points} pts
-                </div>
-              </div>
-              <LessonControlButtons />
-            </ListGroupItem>
-          ))}
+                <AssignmentListControlButtons
+                  assignmentId={String(assignment._id)}
+                  deleteAssignment={(assignmentId) => {
+                    dispatch(deleteAssignment(assignmentId));
+                  }}
+                />
+              </ListGroupItem>
+            )
+          )}
       </ListGroup>
     </div>
   );

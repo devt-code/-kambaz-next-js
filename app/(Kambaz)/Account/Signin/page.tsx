@@ -1,31 +1,55 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import Link from "next/link";
+import { redirect } from "next/dist/client/components/navigation";
+import { setCurrentUser } from "../reducer";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import * as db from "../../Database";
+import { FormControl, Button } from "react-bootstrap";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState<any>({});
+  const dispatch = useDispatch();
+  const signin = () => {
+    const user = db.users.find(
+      (u: any) =>
+        u.username === credentials.username &&
+        u.password === credentials.password
+    );
+    if (!user) return;
+    dispatch(setCurrentUser(user));
+    redirect("/Dashboard");
+  };
+
   return (
     <div id="wd-signin-screen" style={{ maxWidth: "300px" }}>
       <h1>Signin</h1>
 
-      <input
+      <FormControl
+        defaultValue={credentials.username}
+        onChange={(e) =>
+          setCredentials({ ...credentials, username: e.target.value })
+        }
+        className="mb-2"
         placeholder="username"
         id="wd-username"
-        className="form-control mb-2"
       />
 
-      <input
+      <FormControl
+        defaultValue={credentials.password}
+        onChange={(e) =>
+          setCredentials({ ...credentials, password: e.target.value })
+        }
+        className="mb-2"
         placeholder="password"
         type="password"
         id="wd-password"
-        className="form-control mb-2"
       />
 
-      <Link
-        href="/Dashboard"
-        id="wd-signin-btn"
-        className="btn btn-primary mb-2 px-4 d-block"
-        style={{ width: "auto" }}
-      >
-        Signin
-      </Link>
+      <Button onClick={signin} id="wd-signin-btn" className="w-100">
+        Sign in
+      </Button>
 
       <Link href="Signup" id="wd-signup-link">
         Signup

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from "react";
-import { useParams } from "next/navigation";
+import React, { useState } from "react";
+import { redirect, useParams } from "next/navigation";
 import * as db from "../../../../Database";
 
 import Link from "next/link";
@@ -11,19 +12,60 @@ import Col from "react-bootstrap/Col";
 import { Card, FormGroup, FormLabel, InputGroup } from "react-bootstrap";
 import { AiOutlineCalendar, AiOutlineClose } from "react-icons/ai";
 import "./DateInput.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, updateAssignment } from "../reducer";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
-  const assignment = db.assignments.find((a) => a._id === aid);
+  const dispatch = useDispatch();
 
-  if (!assignment) return <div>Assignment not found</div>;
+  const assignments = useSelector(
+    (state: any) => state.assignmentReducer.assignments
+  );
+
+  const assignment = assignments.find((a: any) => a._id === aid);
+
+  const [title, setTitle] = useState(assignment?.title || "");
+  const [points, setPoints] = useState(assignment?.points || 0);
+  const [fromDate, setFromDate] = useState(
+    assignment?.fromDate || new Date().toISOString().slice(0, 16)
+  );
+  const [dueDate, setDueDate] = useState(
+    assignment?.dueDate || new Date().toISOString().slice(0, 16)
+  );
+  const [until, setUntil] = useState(
+    assignment?.until || new Date().toISOString().slice(0, 16)
+  );
+
+  const handleSave = () => {
+    const newAssignment = {
+      _id: assignment?._id || "",
+      title,
+      course: cid,
+      points,
+      fromDate,
+      dueDate,
+      until,
+    };
+
+    if (assignment) {
+      dispatch(updateAssignment(newAssignment));
+    } else {
+      dispatch(addAssignment(newAssignment));
+    }
+
+    redirect(`/Courses/${cid}/Assignments`);
+  };
 
   return (
     <div className="container text-left" style={{ maxWidth: "90%" }}>
       <Form className="p-3" id="wd-assignments-editor">
         <FormGroup className="mb-3">
           <FormLabel>Assignment Name</FormLabel>
-          <Form.Control defaultValue={assignment.title} />
+          <Form.Control
+            defaultValue={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </FormGroup>
 
         <Form.Group className="mb-3">
@@ -57,7 +99,10 @@ export default function AssignmentEditor() {
             Points
           </FormLabel>
           <Col sm={10}>
-            <Form.Control defaultValue={assignment.points} />
+            <Form.Control
+              defaultValue={points}
+              onChange={(e) => setPoints(e.target.value)}
+            />
           </Col>
         </FormGroup>
 
@@ -137,8 +182,9 @@ export default function AssignmentEditor() {
                 <InputGroup>
                   <Form.Control
                     type="datetime-local"
-                    defaultValue={assignment.dueDate}
+                    defaultValue={dueDate}
                     className="no-native-icon"
+                    onChange={(e) => setDueDate(e.target.value)}
                   />
                   <InputGroup.Text>
                     <AiOutlineCalendar size={16} />
@@ -155,8 +201,9 @@ export default function AssignmentEditor() {
                     <InputGroup>
                       <Form.Control
                         type="datetime-local"
-                        defaultValue={assignment.fromDate}
+                        defaultValue={fromDate}
                         className="no-native-icon"
+                        onChange={(e) => setFromDate(e.target.value)}
                       />
                       <InputGroup.Text>
                         <AiOutlineCalendar size={16} />
@@ -172,8 +219,9 @@ export default function AssignmentEditor() {
                     <InputGroup>
                       <Form.Control
                         type="datetime-local"
-                        defaultValue={assignment.until}
+                        defaultValue={until}
                         className="no-native-icon"
+                        onChange={(e) => setUntil(e.target.value)}
                       />
                       <InputGroup.Text>
                         <AiOutlineCalendar size={16} />
@@ -190,9 +238,9 @@ export default function AssignmentEditor() {
           <Link href={`/Courses/${cid}/Assignments`}>
             <Button variant="secondary">Cancel</Button>
           </Link>
-          <Link href={`/Courses/${cid}/Assignments`}>
-            <Button variant="danger">Save</Button>
-          </Link>
+          <Button variant="danger" onClick={handleSave}>
+            Save
+          </Button>
         </div>
       </Form>
     </div>

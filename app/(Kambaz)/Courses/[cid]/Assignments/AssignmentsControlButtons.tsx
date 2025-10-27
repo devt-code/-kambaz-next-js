@@ -1,6 +1,6 @@
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
-export default function ModuleControlButtons() {
+export default function AssignmentsControlButtons() {
   return (
     <div className="float-end">
       <span className="fs-4 bg-secondary border border-dark rounded-pill px-1">
