@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { Key, ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import * as db from "../Database";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
+import { enroll, unenroll } from "./reducer";
 import {
   Row,
   Col,
@@ -16,11 +18,9 @@ import {
   Button,
   FormControl,
 } from "react-bootstrap";
-import { enroll, unenroll } from "./reducer";
 
 export default function Dashboard() {
   const dispatch = useDispatch();
-
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector(
@@ -73,6 +73,37 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeleteCourse = (courseId: string) => {
+    dispatch(deleteCourse(courseId));
+    dispatch(unenroll({ user: currentUser._id, course: courseId }));
+  };
+
+  // const handleAddCourse = () => {
+  //   dispatch(addNewCourse(course));
+  //   console.log(courses);
+  //   console.log("done");
+  //   const newCourse = courses[courses.length - 1];
+  //   console.log(courses);
+
+  //   dispatch(enroll({ user: currentUser._id, course: newCourse._id }));
+  // };
+
+  const handleAddCourse = () => {
+    const newCourse = {
+      ...course,
+      _id: new Date().getTime().toString(),
+    };
+    console.log(courses);
+    console.log("done");
+
+    // Pass full courses list + new course
+    dispatch(addNewCourse({ courses, newCourse }));
+    console.log(courses);
+
+    // Immediately enroll current user
+    dispatch(enroll({ user: currentUser._id, course: newCourse._id }));
+  };
+
   const displayedCourses = showAll
     ? courses
     : courses.filter((course: any) =>
@@ -94,7 +125,7 @@ export default function Dashboard() {
             <button
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={() => dispatch(addNewCourse(course))}
+              onClick={handleAddCourse} // Trigger the add action
             >
               Add
             </button>
@@ -144,15 +175,12 @@ export default function Dashboard() {
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
           {displayedCourses.map(
-            (course: {
-              _id: Key | null | undefined;
-              name: ReactNode;
-              description: ReactNode;
-            }) => {
+            (course: { _id: string; name: string; description: string }) => {
               const isEnrolled = enrollments.some(
-                (en: { course: Key | null | undefined; user: any }) =>
+                (en: { course: string; user: any }) =>
                   en.course === course._id && en.user === currentUser._id
               );
+
               return (
                 <Col
                   key={course._id}
@@ -184,7 +212,6 @@ export default function Dashboard() {
                         >
                           {course.description}
                         </CardText>
-
                         <Button variant="primary">Go</Button>
 
                         {currentUser?.role !== "STUDENT" && (
@@ -192,10 +219,9 @@ export default function Dashboard() {
                             <button
                               onClick={(event) => {
                                 event.preventDefault();
-                                dispatch(deleteCourse(course._id));
+                                handleDeleteCourse(course._id); // Delete course and unenroll if necessary
                               }}
                               className="btn btn-danger float-end me-2"
-                              id="wd-delete-course-click"
                             >
                               Delete
                             </button>
@@ -215,7 +241,7 @@ export default function Dashboard() {
                         <button
                           onClick={(event) => {
                             event.preventDefault();
-                            toggleEnrollment(course._id as string);
+                            toggleEnrollment(course._id);
                           }}
                           className={`btn float-end ${
                             isEnrolled ? "btn-danger" : "btn-success"
@@ -234,4 +260,7 @@ export default function Dashboard() {
       </div>
     </div>
   );
+}
+function uuidv4() {
+  throw new Error("Function not implemented.");
 }

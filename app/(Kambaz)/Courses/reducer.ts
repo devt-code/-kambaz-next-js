@@ -9,9 +9,9 @@ const coursesSlice = createSlice({
   name: "courses",
   initialState,
   reducers: {
-    addNewCourse: (state, { payload: course }) => {
-      const newCourse = { ...course, _id: uuidv4() };
-      state.courses = [...state.courses, newCourse] as any;
+    addNewCourse: (state, { payload }) => {
+      const { courses, newCourse } = payload;
+      state.courses = [...courses, newCourse];
     },
     deleteCourse: (state, { payload: courseId }) => {
       state.courses = state.courses.filter(

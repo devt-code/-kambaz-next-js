@@ -32,6 +32,7 @@ const enrollmentsSlice = createSlice({
           )
       );
     },
+
     clearEnrollments: (state) => {
       state.enrollments = [];
     },
