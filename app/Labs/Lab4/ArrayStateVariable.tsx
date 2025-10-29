@@ -21,6 +21,23 @@ export default function ArrayStateVariable() {
       <button className="btn btn-success mb-3" onClick={addElement}>
         Add Element
       </button>
+      <ul className="list-group">
+        {array.map((item, index) => (
+          <li
+            key={index}
+            className="list-group-item d-flex justify-content-between align-items-center"
+          >
+            <span className="fw-semibold">{item}</span>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => deleteElement(index)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+      <hr />
       <ListGroup>
         {todos.map((todo: any) => (
           <ListGroupItem key={todo.id}>{todo.title}</ListGroupItem>
