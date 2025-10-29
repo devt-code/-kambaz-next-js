@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Key, ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import * as db from "../Database";
 import { useDispatch, useSelector } from "react-redux";
@@ -78,29 +78,12 @@ export default function Dashboard() {
     dispatch(unenroll({ user: currentUser._id, course: courseId }));
   };
 
-  // const handleAddCourse = () => {
-  //   dispatch(addNewCourse(course));
-  //   console.log(courses);
-  //   console.log("done");
-  //   const newCourse = courses[courses.length - 1];
-  //   console.log(courses);
-
-  //   dispatch(enroll({ user: currentUser._id, course: newCourse._id }));
-  // };
-
   const handleAddCourse = () => {
     const newCourse = {
       ...course,
       _id: new Date().getTime().toString(),
     };
-    console.log(courses);
-    console.log("done");
-
-    // Pass full courses list + new course
     dispatch(addNewCourse({ courses, newCourse }));
-    console.log(courses);
-
-    // Immediately enroll current user
     dispatch(enroll({ user: currentUser._id, course: newCourse._id }));
   };
 
@@ -125,7 +108,7 @@ export default function Dashboard() {
             <button
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={handleAddCourse} // Trigger the add action
+              onClick={handleAddCourse}
             >
               Add
             </button>
@@ -212,43 +195,46 @@ export default function Dashboard() {
                         >
                           {course.description}
                         </CardText>
-                        <Button variant="primary">Go</Button>
 
-                        {currentUser?.role !== "STUDENT" && (
-                          <>
-                            <button
-                              onClick={(event) => {
-                                event.preventDefault();
-                                handleDeleteCourse(course._id); // Delete course and unenroll if necessary
-                              }}
-                              className="btn btn-danger float-end me-2"
-                            >
-                              Delete
-                            </button>
-                            <button
-                              id="wd-edit-course-click"
-                              onClick={(event) => {
-                                event.preventDefault();
-                                setCourse(course);
-                              }}
-                              className="btn btn-warning me-2 float-end"
-                            >
-                              Edit
-                            </button>
-                          </>
-                        )}
+                        <div className="d-flex flex-wrap gap-2 mt-2">
+                          <Button variant="primary">Go</Button>
 
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            toggleEnrollment(course._id);
-                          }}
-                          className={`btn float-end ${
-                            isEnrolled ? "btn-danger" : "btn-success"
-                          }`}
-                        >
-                          {isEnrolled ? "Unenroll" : "Enroll"}
-                        </button>
+                          <button
+                            onClick={(event) => {
+                              event.preventDefault();
+                              toggleEnrollment(course._id);
+                            }}
+                            className={`btn ${
+                              isEnrolled ? "btn-danger" : "btn-success"
+                            }`}
+                          >
+                            {isEnrolled ? "Unenroll" : "Enroll"}
+                          </button>
+
+                          {currentUser?.role !== "STUDENT" && (
+                            <>
+                              <button
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  handleDeleteCourse(course._id);
+                                }}
+                                className="btn btn-danger"
+                              >
+                                Delete
+                              </button>
+                              <button
+                                id="wd-edit-course-click"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  setCourse(course);
+                                }}
+                                className="btn btn-warning"
+                              >
+                                Edit
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </CardBody>
                     </Link>
                   </Card>
@@ -260,7 +246,4 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}
-function uuidv4() {
-  throw new Error("Function not implemented.");
 }
