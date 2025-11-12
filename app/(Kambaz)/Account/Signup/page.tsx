@@ -1,35 +1,48 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import Link from "next/link";
+import { redirect } from "next/dist/client/components/navigation";
+import { setCurrentUser } from "../reducer";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { FormControl, Button } from "react-bootstrap";
+import * as client from "../client";
+
 export default function Signup() {
+  const [user, setUser] = useState<any>({});
+  const dispatch = useDispatch();
+
+  const signup = async () => {
+    const currentUser = await client.signup(user);
+    dispatch(setCurrentUser(currentUser));
+    redirect("/Account/Profile");
+  };
   return (
-    <div id="wd-signup-screen" style={{ maxWidth: "300px" }}>
+    <div className="wd-signup-screen" style={{ maxWidth: "300px" }}>
       <h1>Sign up</h1>
-      <input
+      <FormControl
+        value={user.username}
+        onChange={(e) => setUser({ ...user, username: e.target.value })}
+        className="wd-username mb-2"
         placeholder="username"
-        id="wd-username"
-        className="form-control mb-2"
       />
-      <input
+      <FormControl
+        value={user.password}
+        onChange={(e) => setUser({ ...user, password: e.target.value })}
+        className="wd-password mb-2"
         placeholder="password"
         type="password"
-        id="wd-password"
-        className="form-control mb-2"
       />
-      <input
-        placeholder="verify password"
-        type="password"
-        id="wd-password-verify"
-        className="form-control mb-2"
-      />
-      <Link
-        href="Profile"
-        id="wd-singup-btn"
-        className="btn btn-primary mb-2 px-4 d-block"
-        style={{ width: "auto" }}
+      <button
+        onClick={signup}
+        className="wd-signup-btn btn btn-primary mb-2 w-100"
       >
-        {" "}
-        Sign up{" "}
+        Sign up
+      </button>
+      <br />
+      <Link href="/Account/Signin" className="wd-signin-link">
+        Sign in
       </Link>
-      <Link href="Signin"> Sign in </Link>
     </div>
   );
 }

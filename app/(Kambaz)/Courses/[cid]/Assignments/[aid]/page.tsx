@@ -13,6 +13,10 @@ import { AiOutlineCalendar, AiOutlineClose } from "react-icons/ai";
 import "./DateInput.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
+import {
+  createAssignment as clientCreateAssignment,
+  updateAssignment as clientUpdateAssignment,
+} from "../client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -36,24 +40,44 @@ export default function AssignmentEditor() {
     assignment?.until || new Date().toISOString().slice(0, 16)
   );
 
-  const handleSave = () => {
-    const newAssignment = {
-      _id: assignment?._id || "",
+  const handleSave = async () => {
+    const targetPath = `/Courses/${cid}/Assignments`;
+    const assignmentPayload: any = {
       title,
       course: cid,
-      points,
+      points: Number(points),
       fromDate,
       dueDate,
       until,
     };
 
-    if (assignment) {
-      dispatch(updateAssignment(newAssignment));
-    } else {
-      dispatch(addAssignment(newAssignment));
+    try {
+      if (assignment) {
+        const updatedAssignment = { ...assignment, ...assignmentPayload };
+        console.log("Attempting to UPDATE assignment:", updatedAssignment);
+        await clientUpdateAssignment(updatedAssignment);
+        dispatch(updateAssignment(updatedAssignment));
+        console.log("UPDATE successful. Redux updated.");
+      } else {
+        console.log("Attempting to CREATE assignment for course:", cid);
+        const newAssignmentFromServer = await clientCreateAssignment(
+          String(cid),
+          assignmentPayload
+        );
+        dispatch(addAssignment(newAssignmentFromServer));
+        console.log(
+          "CREATE successful. New assignment:",
+          newAssignmentFromServer
+        );
+      }
+      console.log(`Attempting to navigate to: ${targetPath}`);
+      window.location.href = targetPath;
+    } catch (error) {
+      console.error(
+        "Error saving assignment (API failed or Redux dispatch error):",
+        error
+      );
     }
-
-    redirect(`/Courses/${cid}/Assignments`);
   };
 
   return (
@@ -99,7 +123,8 @@ export default function AssignmentEditor() {
           </FormLabel>
           <Col sm={10}>
             <Form.Control
-              defaultValue={points}
+              type="number" // Added type="number" for points
+              value={points}
               onChange={(e) => setPoints(e.target.value)}
             />
           </Col>
