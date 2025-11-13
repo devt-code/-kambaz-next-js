@@ -77,7 +77,14 @@ export default function TOC() {
         </NavLink>
       </NavItem>
       <NavItem>
-        <NavLink href="https://github.com/devt-code/">My GitHub</NavLink>
+        <NavLink href="https://github.com/devt-code/-kambaz-next-js">
+          Client GIT Link
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink href="https://github.com/devt-code/kambaz-node-server-app">
+          Server GIT Link
+        </NavLink>
       </NavItem>
     </Nav>
   );
