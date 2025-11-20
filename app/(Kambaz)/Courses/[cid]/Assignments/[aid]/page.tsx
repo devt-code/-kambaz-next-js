@@ -54,23 +54,20 @@ export default function AssignmentEditor() {
     try {
       if (assignment) {
         const updatedAssignment = { ...assignment, ...assignmentPayload };
-        console.log("Attempting to UPDATE assignment:", updatedAssignment);
+        // debug log removed: Attempting to UPDATE assignment
         await clientUpdateAssignment(updatedAssignment);
         dispatch(updateAssignment(updatedAssignment));
-        console.log("UPDATE successful. Redux updated.");
+        // debug log removed: UPDATE successful. Redux updated.
       } else {
-        console.log("Attempting to CREATE assignment for course:", cid);
+        // debug log removed: Attempting to CREATE assignment for course
         const newAssignmentFromServer = await clientCreateAssignment(
           String(cid),
           assignmentPayload
         );
         dispatch(addAssignment(newAssignmentFromServer));
-        console.log(
-          "CREATE successful. New assignment:",
-          newAssignmentFromServer
-        );
+        // debug log removed: CREATE successful. New assignment
       }
-      console.log(`Attempting to navigate to: ${targetPath}`);
+      // debug log removed: Attempting to navigate
       window.location.href = targetPath;
     } catch (error) {
       console.error(

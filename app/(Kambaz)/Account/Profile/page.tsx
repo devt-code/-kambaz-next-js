@@ -9,7 +9,6 @@ import * as client from "../client";
 
 export default function Profile() {
   const [profile, setProfile] = useState<any>({});
-  console.log("From Profile Page: " + profile.username);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
