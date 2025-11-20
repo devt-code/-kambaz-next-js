@@ -1,8 +1,13 @@
+"use client";
 import { FaTrash } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
 import { BsPlus } from "react-icons/bs";
+import { useSelector, TypedUseSelectorHook } from "react-redux";
+import { RootState } from "../../../store";
+const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
+
 export default function ModuleControlButtons({
   moduleId,
   deleteModule,
@@ -12,6 +17,14 @@ export default function ModuleControlButtons({
   deleteModule: (moduleId: string) => void;
   editModule: (moduleId: string) => void;
 }) {
+  type User = { role?: string } | null | undefined;
+  const currentUser = useTypedSelector(
+    (state) => state.accountReducer.currentUser as unknown as User
+  );
+  const isStudent = currentUser?.role === "STUDENT";
+
+  if (isStudent) return null;
+
   return (
     <div className="float-end">
       <FaPencil

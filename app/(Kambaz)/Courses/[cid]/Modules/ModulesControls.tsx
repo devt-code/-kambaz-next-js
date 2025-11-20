@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   Dropdown,
@@ -10,6 +11,10 @@ import { FaPlus } from "react-icons/fa6";
 import { FaBan } from "react-icons/fa";
 import GreenCheckmark from "./GreenCheckmark";
 import { useState } from "react";
+import { useSelector, TypedUseSelectorHook } from "react-redux";
+import { RootState } from "../../../store";
+const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
+
 export default function ModulesControls({
   moduleName,
   setModuleName,
@@ -22,19 +27,29 @@ export default function ModulesControls({
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  type User = { role?: string } | null | undefined;
+  const currentUser = useTypedSelector(
+    (state) => state.accountReducer.currentUser as unknown as User
+  );
+  const isStudent = currentUser?.role === "STUDENT";
 
   return (
     <div id="wd-modules-controls" className="text-nowrap">
-      <Button
-        variant="danger"
-        onClick={handleShow}
-        size="lg"
-        className="me-1 float-end"
-        id="wd-add-module-btn"
-      >
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Module
-      </Button>
+      {!isStudent && (
+        <Button
+          variant="danger"
+          onClick={handleShow}
+          size="lg"
+          className="me-1 float-end"
+          id="wd-add-module-btn"
+        >
+          <FaPlus
+            className="position-relative me-2"
+            style={{ bottom: "1px" }}
+          />
+          Module
+        </Button>
+      )}
       <Dropdown className="float-end me-2">
         <DropdownToggle variant="secondary" size="lg" id="wd-publish-all-btn">
           <GreenCheckmark /> Publish All

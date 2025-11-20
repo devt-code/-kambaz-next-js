@@ -16,3 +16,6 @@ const store = configureStore({
   },
 });
 export default store;
+
+// RootState type for useSelector typing in components
+export type RootState = ReturnType<typeof store.getState>;

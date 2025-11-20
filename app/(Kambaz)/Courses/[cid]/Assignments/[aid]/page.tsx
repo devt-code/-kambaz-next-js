@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from "react";
 import { redirect, useParams } from "next/navigation";
@@ -11,18 +10,40 @@ import Col from "react-bootstrap/Col";
 import { Card, FormGroup, FormLabel, InputGroup } from "react-bootstrap";
 import { AiOutlineCalendar, AiOutlineClose } from "react-icons/ai";
 import "./DateInput.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
+import { RootState } from "../../../../store";
+const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 import { addAssignment, updateAssignment } from "../reducer";
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
+  const params = useParams();
+  const cid = params.cid;
+  const aid = params.aid;
   const dispatch = useDispatch();
 
-  const assignments = useSelector(
-    (state: any) => state.assignmentReducer.assignments
+  // prevent STUDENT users from accessing this editor route
+  type User = { role?: string } | null | undefined;
+  const currentUser = useTypedSelector(
+    (state) => state.accountReducer.currentUser as unknown as User
   );
+  if (currentUser?.role === "STUDENT") {
+    redirect(`/Courses/${cid}/Assignments`);
+  }
 
-  const assignment = assignments.find((a: any) => a._id === aid);
+  const assignments = useTypedSelector(
+    (state) => state.assignmentReducer.assignments
+  );
+  type AssignmentItem = {
+    _id?: string;
+    title?: string;
+    points?: number;
+    fromDate?: string;
+    dueDate?: string;
+    until?: string;
+  };
+  const assignment = (assignments as AssignmentItem[]).find(
+    (a) => a._id === aid
+  );
 
   const [title, setTitle] = useState(assignment?.title || "");
   const [points, setPoints] = useState(assignment?.points || 0);
@@ -100,7 +121,7 @@ export default function AssignmentEditor() {
           <Col sm={10}>
             <Form.Control
               defaultValue={points}
-              onChange={(e) => setPoints(e.target.value)}
+              onChange={(e) => setPoints(Number(e.target.value))}
             />
           </Col>
         </FormGroup>
