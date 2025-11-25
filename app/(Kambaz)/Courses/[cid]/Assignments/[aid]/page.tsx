@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from "react";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import Link from "next/link";
 import Form from "react-bootstrap/Form";
@@ -55,7 +55,7 @@ export default function AssignmentEditor() {
       if (assignment) {
         const updatedAssignment = { ...assignment, ...assignmentPayload };
         // debug log removed: Attempting to UPDATE assignment
-        await clientUpdateAssignment(updatedAssignment);
+        await clientUpdateAssignment(String(cid), updatedAssignment);
         dispatch(updateAssignment(updatedAssignment));
         // debug log removed: UPDATE successful. Redux updated.
       } else {

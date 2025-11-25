@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 // import * as db from "../../../Database";
 import * as client from "../../client";
@@ -9,13 +9,7 @@ import ModulesControls from "./ModulesControls";
 import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
-import {
-  addModule,
-  editModule,
-  updateModule,
-  deleteModule,
-  setModules,
-} from "./reducer";
+import { editModule, updateModule, setModules } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 
 export default function Modules() {
@@ -23,13 +17,14 @@ export default function Modules() {
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
-  const fetchModules = async () => {
+  const fetchModules = useCallback(async () => {
     const modules = await client.findModulesForCourse(cid as string);
     dispatch(setModules(modules));
-  };
+  }, [cid, dispatch]);
+
   useEffect(() => {
     fetchModules();
-  }, []);
+  }, [fetchModules]);
 
   const onCreateModuleForCourse = async () => {
     if (!cid) return;

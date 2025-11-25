@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import * as client from "../../../Account/client";
@@ -38,14 +38,15 @@ export default function PeopleDetails({
   };
 
   const [user, setUser] = useState<any>({});
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     if (!uid) return;
     const user = await client.findUserById(uid);
     setUser(user);
-  };
-  useEffect(() => {
-    if (uid) fetchUser();
   }, [uid]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   useEffect(() => {
     if (!user) return;

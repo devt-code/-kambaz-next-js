@@ -7,7 +7,6 @@ import React, { useState } from "react";
 // import * as db from "../../../../Database";
 
 import PeopleDetails from "./Details";
-import Link from "next/link";
 
 export default function PeopleTable({
   users = [],

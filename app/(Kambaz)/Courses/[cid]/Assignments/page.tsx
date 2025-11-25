@@ -12,23 +12,25 @@ import AssignmentIcon from "./AssignmentIcon";
 import "../../../styles.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setAssignments } from "./reducer";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 import * as client from "./client";
 
 export default function Assignments() {
   const { cid } = useParams();
+  const dispatch = useDispatch();
   const assignments = useSelector(
     (state: any) => state.assignmentReducer.assignments || []
   );
 
-  const fetchAssignments = async () => {
+  const fetchAssignments = useCallback(async () => {
     const modules = await client.findAssignmentsForCourse(cid as string);
     dispatch(setAssignments(modules));
-  };
+  }, [cid, dispatch]);
+
   useEffect(() => {
     fetchAssignments();
-  }, []);
+  }, [fetchAssignments]);
 
   const formatDate = (isoString: string | number | Date) => {
     if (!isoString) return "—";
@@ -45,13 +47,11 @@ export default function Assignments() {
   };
 
   const onRemoveAssigment = async (assignmentId: string) => {
-    await client.deleteAssignment(assignmentId);
+    await client.deleteAssignment(cid as string, assignmentId);
     dispatch(
       setAssignments(assignments.filter((a: any) => a._id !== assignmentId))
     );
   };
-
-  const dispatch = useDispatch();
 
   return (
     <div id="wd-assignments">

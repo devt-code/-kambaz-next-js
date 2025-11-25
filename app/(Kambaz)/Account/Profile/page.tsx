@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { redirect } from "next/dist/client/components/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { Button, FormControl } from "react-bootstrap";
@@ -17,10 +17,10 @@ export default function Profile() {
     dispatch(setCurrentUser(updatedProfile));
   };
 
-  const fetchProfile = () => {
+  const fetchProfile = useCallback(() => {
     if (!currentUser) return redirect("/Account/Signin");
     setProfile(currentUser);
-  };
+  }, [currentUser]);
 
   const signout = async () => {
     await client.signout();
@@ -30,7 +30,7 @@ export default function Profile() {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [fetchProfile]);
   return (
     <div className="wd-profile-screen" style={{ maxWidth: "300px" }}>
       <h3>Profile</h3>
