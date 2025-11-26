@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FormCheck, FormControl } from "react-bootstrap";
-const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
+const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_NEW;
 
 export default function WorkingWithObjects() {
   const [assignment, setAssignment] = useState({

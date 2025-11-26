@@ -27,17 +27,6 @@ interface Course {
   createdBy?: string;
 }
 
-interface Course {
-  _id: string;
-  name: string;
-  number: string;
-  startDate: string;
-  endDate: string;
-  image: string;
-  description: string;
-  createdBy?: string;
-}
-
 interface Enrollment {
   _id: string;
   user: string;
@@ -70,20 +59,37 @@ export default function Dashboard() {
     description: "New Description",
   });
 
+  // Helper to categorize users
+  const isStudent = currentUser?.role === "STUDENT";
+  const isFaculty = currentUser?.role === "FACULTY";
+  const isOtherUser = currentUser && !isStudent;
+
+  // FIX: Fetch all courses for students, and managed courses for others
   const fetchCourses = useCallback(async () => {
     if (!currentUser) return;
     try {
-      const data = await client.findMyCourses();
+      let data;
+      if (isStudent) {
+        // Students fetch ALL courses
+        data = await client.fetchAllCourses();
+      } else {
+        // Faculty/Other users fetch courses they manage/created
+        data = await client.findMyCourses();
+      }
+      console.log("Fetched courses:", data);
       setCourses(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error fetching courses:", err);
     }
-  }, [currentUser]);
+  }, [currentUser, isStudent]);
 
   const fetchEnrollments = useCallback(async () => {
     if (!currentUser) return;
     try {
+      console.log("Fetching enrollments for user:", currentUser._id);
       const data = await client.findEnrollmentsForUser(currentUser._id);
+      console.log("Fetched enrollments now:", data);
+
       // Normalize enrollments to Enrollment[] format
       if (Array.isArray(data)) {
         const normalized: Enrollment[] = data
@@ -199,20 +205,37 @@ export default function Dashboard() {
     );
   }
 
+  console.log("Current User:", currentUser);
+  console.log("All enrollments:", enrollments);
   const safeEnrollments = Array.isArray(enrollments) ? enrollments : [];
+  console.log("Current Enrollments:", safeEnrollments);
 
-  const filteredCourses =
-    currentUser.role === "FACULTY"
-      ? courses // show all for faculty
-      : showAll
-      ? courses
-      : courses.filter((c) => safeEnrollments.some((e) => e.course === c._id));
+  // FILTERING LOGIC
+  let filteredCourses: Course[];
+  if (isStudent) {
+    if (showAll) {
+      // Students: 'Enrollments' view -> show all courses fetched from client.fetchAllCourses()
+      filteredCourses = courses;
+    } else {
+      // Students: 'My Courses' view (default) -> show only enrolled courses
+      filteredCourses = courses.filter((c) =>
+        safeEnrollments.some((e) => e.course === c._id)
+      );
+    }
+  } else {
+    // Other Users (Faculty, Admin, etc.): show courses fetched from client.findMyCourses()
+    filteredCourses = courses;
+  }
+
+  console.log("Rendering Dashboard with courses:", filteredCourses);
+
+  // filteredCourses = courses;
 
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title" className="d-flex justify-content-between">
         Dashboard
-        {currentUser.role === "STUDENT" && (
+        {isStudent && (
           <button
             className="btn btn-primary"
             onClick={() => setShowAll(!showAll)}
@@ -226,7 +249,8 @@ export default function Dashboard() {
       <h2>Published Courses ({filteredCourses.length})</h2>
       <hr />
 
-      {currentUser.role === "FACULTY" && (
+      {/* Course creation/editing tools only visible for Faculty */}
+      {isFaculty && (
         <>
           <h5>
             New Course
@@ -303,11 +327,13 @@ export default function Dashboard() {
                       {c.description}
                     </CardText>
 
-                    {(isEnrolled || currentUser.role === "FACULTY") && (
+                    {/* Go button: Visible if enrolled (student) or if non-student */}
+                    {(isEnrolled || isOtherUser) && (
                       <Button variant="primary">Go</Button>
                     )}
 
-                    {currentUser.role === "FACULTY" && (
+                    {/* Edit/Delete buttons: Only visible for non-students (Other Users) */}
+                    {isOtherUser && (
                       <>
                         <button
                           id="wd-edit-course-click"
@@ -333,7 +359,8 @@ export default function Dashboard() {
                       </>
                     )}
 
-                    {currentUser.role !== "FACULTY" && showAll && (
+                    {/* Enroll/Unenroll buttons: Only visible for Students in 'Enrollments' view */}
+                    {isStudent && showAll && (
                       <button
                         onClick={(e) => {
                           e.preventDefault();

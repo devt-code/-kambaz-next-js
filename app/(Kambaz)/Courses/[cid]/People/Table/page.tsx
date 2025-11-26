@@ -27,7 +27,15 @@ export default function PeopleTable({
       try {
         if (cid) {
           const users = await client.findUsersForCourse(cid as string);
-          setCourseUsers(Array.isArray(users) ? users : []);
+          setCourseUsers(
+            Array.isArray(users)
+              ? users.map((user) => ({
+                  ...user,
+                  firstName: user?.firstName ?? "",
+                  lastName: user?.lastName ?? "",
+                }))
+              : []
+          );
         }
       } catch (err) {
         console.error("Error fetching course users:", err);
