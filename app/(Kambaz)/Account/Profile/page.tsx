@@ -13,8 +13,11 @@ export default function Profile() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const updateProfile = async () => {
-    const updatedProfile = await client.updateUser(profile);
-    dispatch(setCurrentUser(updatedProfile));
+    await client.updateUser(profile);
+    // Refetch the current user from the server to update session
+    const latestProfile = await client.profile();
+    dispatch(setCurrentUser(latestProfile));
+    setProfile(latestProfile);
   };
 
   const fetchProfile = useCallback(() => {
