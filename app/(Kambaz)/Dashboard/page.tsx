@@ -250,7 +250,7 @@ export default function Dashboard() {
       <hr />
 
       {/* Course creation/editing tools only visible for Faculty */}
-      {isFaculty && (
+      {isOtherUser && (
         <>
           <h5>
             New Course
@@ -304,6 +304,7 @@ export default function Dashboard() {
               style={{ width: "300px" }}
             >
               <Card>
+                {isEnrolled}
                 <Link
                   href={`/Courses/${c._id}/Home`}
                   className="wd-dashboard-course-link text-decoration-none text-dark"
@@ -328,9 +329,7 @@ export default function Dashboard() {
                     </CardText>
 
                     {/* Go button: Visible if enrolled (student) or if non-student */}
-                    {(isEnrolled || isOtherUser) && (
-                      <Button variant="primary">Go</Button>
-                    )}
+                    <Button variant="primary">Go</Button>
 
                     {/* Edit/Delete buttons: Only visible for non-students (Other Users) */}
                     {isOtherUser && (

@@ -26,6 +26,12 @@ export default function Modules() {
     fetchModules();
   }, [fetchModules]);
 
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // Permission check
+  const isStudent = currentUser?.role === "STUDENT";
+  const isOtherUser = currentUser && !isStudent;
+
   const onCreateModuleForCourse = async () => {
     if (!cid) return;
     const newModule = { name: moduleName, course: cid };
@@ -81,11 +87,13 @@ export default function Modules() {
                   defaultValue={module.name}
                 />
               )}
-              <ModuleControlButtons
-                moduleId={module._id as string}
-                deleteModule={(moduleId) => onRemoveModule(moduleId)}
-                editModule={(moduleId) => dispatch(editModule(moduleId))}
-              />
+              {isOtherUser && (
+                <ModuleControlButtons
+                  moduleId={module._id as string}
+                  deleteModule={(moduleId) => onRemoveModule(moduleId)}
+                  editModule={(moduleId) => dispatch(editModule(moduleId))}
+                />
+              )}
             </div>
             {module.lessons && (
               <ListGroup className="wd-lessons rounded-0">

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, FormControl, InputGroup } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { redirect, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import { useSelector } from "react-redux";
 
 export default function AssignmentsControls() {
   const { cid } = useParams();
@@ -11,6 +13,12 @@ export default function AssignmentsControls() {
     const aid = uuidv4();
     redirect("/Courses/" + cid + "/Assignments/" + aid);
   };
+
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // Permission check
+  const isStudent = currentUser?.role === "STUDENT";
+  const isOtherUser = currentUser && !isStudent;
 
   return (
     <div>
@@ -25,16 +33,21 @@ export default function AssignmentsControls() {
           className="border-start-0"
         />
       </InputGroup>
-      <Button
-        variant="danger"
-        size="lg"
-        className="me-1 float-end"
-        id="wd-add-assignment-btn"
-        onClick={assignmentEditor}
-      >
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Assignment
-      </Button>
+      {isOtherUser && (
+        <Button
+          variant="danger"
+          size="lg"
+          className="me-1 float-end"
+          id="wd-add-assignment-btn"
+          onClick={assignmentEditor}
+        >
+          <FaPlus
+            className="position-relative me-2"
+            style={{ bottom: "1px" }}
+          />
+          Assignment
+        </Button>
+      )}
       <Button
         variant="secondary"
         size="lg"

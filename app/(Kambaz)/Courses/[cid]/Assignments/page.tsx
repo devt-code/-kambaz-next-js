@@ -53,6 +53,12 @@ export default function Assignments() {
     );
   };
 
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // Permission check
+  const isStudent = currentUser?.role === "STUDENT";
+  const isOtherUser = currentUser && !isStudent;
+
   return (
     <div id="wd-assignments">
       <AssignmentsControls />
@@ -83,12 +89,22 @@ export default function Assignments() {
               <AssignmentIcon />
               <div className="flex-grow-1">
                 <div>
-                  <Link
-                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                    className="wd-assignment-link text-black"
-                  >
-                    {assignment.title}
-                  </Link>
+                  {isOtherUser && (
+                    <Link
+                      href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="wd-assignment-link text-black"
+                    >
+                      {assignment.title}
+                    </Link>
+                  )}
+                  {isStudent && (
+                    <Link
+                      href={`/Courses/${cid}/Assignments/`}
+                      className="wd-assignment-link text-black"
+                    >
+                      {assignment.title}
+                    </Link>
+                  )}
                 </div>
                 <div className="small">
                   <span className="text-danger">Multiple Modules</span> |{" "}

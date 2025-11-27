@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Dropdown,
@@ -10,6 +11,8 @@ import { FaPlus } from "react-icons/fa6";
 import { FaBan } from "react-icons/fa";
 import GreenCheckmark from "./GreenCheckmark";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+
 export default function ModulesControls({
   moduleName,
   setModuleName,
@@ -20,21 +23,36 @@ export default function ModulesControls({
   addModule: () => void;
 }) {
   const [show, setShow] = useState(false);
+
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // Permission check
+  const isStudent = currentUser?.role === "STUDENT";
+  const isOtherUser = currentUser && !isStudent; // faculty, admin, etc.
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   return (
     <div id="wd-modules-controls" className="text-nowrap">
-      <Button
-        variant="danger"
-        onClick={handleShow}
-        size="lg"
-        className="me-1 float-end"
-        id="wd-add-module-btn"
-      >
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Module
-      </Button>
+      {/* ADD MODULE BUTTON */}
+      {isOtherUser && (
+        <Button
+          variant="danger"
+          onClick={handleShow}
+          size="lg"
+          className="me-1 float-end"
+          id="wd-add-module-btn"
+        >
+          <FaPlus
+            className="position-relative me-2"
+            style={{ bottom: "1px" }}
+          />
+          Module
+        </Button>
+      )}
+
+      {/* PUBLISH DROPDOWN */}
       <Dropdown className="float-end me-2">
         <DropdownToggle variant="secondary" size="lg" id="wd-publish-all-btn">
           <GreenCheckmark /> Publish All
@@ -50,18 +68,20 @@ export default function ModulesControls({
             <FaBan
               className="position-relative me-2"
               style={{ bottom: "1px" }}
-            />{" "}
+            />
             Unpublish all modules
           </DropdownItem>
           <DropdownItem id="wd-unpublish-modules-only">
             <FaBan
               className="position-relative me-2"
               style={{ bottom: "1px" }}
-            />{" "}
+            />
             Unpublish modules only
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
+
+      {/* VIEW PROGRESS */}
       <Button
         variant="secondary"
         size="lg"
@@ -70,6 +90,8 @@ export default function ModulesControls({
       >
         View Progress
       </Button>
+
+      {/* COLLAPSE ALL */}
       <Button
         variant="secondary"
         size="lg"
@@ -78,14 +100,18 @@ export default function ModulesControls({
       >
         Collapse All
       </Button>
-      <ModuleEditor
-        show={show}
-        handleClose={handleClose}
-        dialogTitle="Add Module"
-        moduleName={moduleName}
-        setModuleName={setModuleName}
-        addModule={addModule}
-      />
+
+      {/* MODULE EDITOR MODAL (only for non-students) */}
+      {isOtherUser && (
+        <ModuleEditor
+          show={show}
+          handleClose={handleClose}
+          dialogTitle="Add Module"
+          moduleName={moduleName}
+          setModuleName={setModuleName}
+          addModule={addModule}
+        />
+      )}
     </div>
   );
 }

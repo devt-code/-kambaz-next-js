@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
 import { FaTrash } from "react-icons/fa6";
 import { Modal, Button } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 export default function AssignmentListControlButtons({
   assignmentId,
@@ -25,9 +27,17 @@ export default function AssignmentListControlButtons({
     setShow(false);
   };
 
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // Permission check
+  const isStudent = currentUser?.role === "STUDENT";
+  const isOtherUser = currentUser && !isStudent;
+
   return (
     <div className="float-end">
-      <FaTrash className="text-danger me-3" onClick={handleDeleteClick} />
+      {isOtherUser && (
+        <FaTrash className="text-danger me-3" onClick={handleDeleteClick} />
+      )}
 
       <Modal show={show} onHide={handleCancel}>
         <Modal.Header closeButton>
