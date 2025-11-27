@@ -18,7 +18,6 @@ function AddReduxInner() {
   const [a, setA] = useState(12);
   const [b, setB] = useState(23);
 
-  // Use optional chaining to avoid undefined during server render
   const sum = useSelector((state: RootState) => state.addReducer?.sum ?? 0);
 
   const dispatch = useDispatch();

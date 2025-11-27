@@ -21,7 +21,6 @@ export default function PeopleTable({
   const [courseUsers, setCourseUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch users enrolled in the current course from the server
   useEffect(() => {
     const fetchCourseUsers = async () => {
       try {

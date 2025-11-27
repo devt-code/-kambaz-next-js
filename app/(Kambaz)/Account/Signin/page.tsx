@@ -19,7 +19,6 @@ export default function Signin() {
     const user = await client.signin(credentials);
     if (!user) return;
     dispatch(setCurrentUser(user));
-    // navigate client-side so the Dashboard component mounts with updated Redux state
     router.push("/Dashboard");
   };
 

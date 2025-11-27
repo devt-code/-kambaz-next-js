@@ -54,20 +54,15 @@ export default function AssignmentEditor() {
     try {
       if (assignment) {
         const updatedAssignment = { ...assignment, ...assignmentPayload };
-        // debug log removed: Attempting to UPDATE assignment
         await clientUpdateAssignment(String(cid), updatedAssignment);
         dispatch(updateAssignment(updatedAssignment));
-        // debug log removed: UPDATE successful. Redux updated.
       } else {
-        // debug log removed: Attempting to CREATE assignment for course
         const newAssignmentFromServer = await clientCreateAssignment(
           String(cid),
           assignmentPayload
         );
         dispatch(addAssignment(newAssignmentFromServer));
-        // debug log removed: CREATE successful. New assignment
       }
-      // debug log removed: Attempting to navigate
       window.location.href = targetPath;
     } catch (error) {
       console.error(
@@ -120,7 +115,7 @@ export default function AssignmentEditor() {
           </FormLabel>
           <Col sm={10}>
             <Form.Control
-              type="number" // Added type="number" for points
+              type="number"
               value={points}
               onChange={(e) => setPoints(e.target.value)}
             />

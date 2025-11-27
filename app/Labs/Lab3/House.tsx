@@ -12,7 +12,7 @@ export default function House() {
     },
     owners: ["Alice", "Bob"],
   };
-  // debug log removed
+
   return (
     <div id="wd-house">
       <h4>House</h4>

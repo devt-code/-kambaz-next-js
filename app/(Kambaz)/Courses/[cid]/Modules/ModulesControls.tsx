@@ -26,9 +26,8 @@ export default function ModulesControls({
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
-  // Permission check
   const isStudent = currentUser?.role === "STUDENT";
-  const isOtherUser = currentUser && !isStudent; // faculty, admin, etc.
+  const isOtherUser = currentUser && !isStudent;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

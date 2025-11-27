@@ -34,7 +34,6 @@ import TodoList from "./todos/TodoList";
 import { Container } from "react-bootstrap";
 
 export default function Lab3() {
-  // debug log removed
   return (
     <Container>
       <div id="wd-lab3">

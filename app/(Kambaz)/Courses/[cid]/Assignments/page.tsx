@@ -55,7 +55,6 @@ export default function Assignments() {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
-  // Permission check
   const isStudent = currentUser?.role === "STUDENT";
   const isOtherUser = currentUser && !isStudent;
 
@@ -121,7 +120,6 @@ export default function Assignments() {
                 deleteAssignment={(assignmentId) =>
                   onRemoveAssigment(assignmentId)
                 }
-                // deleteModule={(moduleId) => onRemoveModule(moduleId)}
               />
             </ListGroupItem>
           ))}

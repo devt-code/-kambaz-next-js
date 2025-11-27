@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addTodo, updateTodo, setTodo } from "./todosReducer";
 import { ListGroupItem, Button, FormControl } from "react-bootstrap";
 
 export default function TodoForm() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { todo } = useSelector((state: any) => state.todosReducer);
   const dispatch = useDispatch();
 

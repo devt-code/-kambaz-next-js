@@ -22,8 +22,6 @@ export default function PeopleTable({
   const [showDetails, setShowDetails] = useState(false);
   const [showUserId, setShowUserId] = useState<string | null>(null);
 
-  // debug log removed
-
   return (
     <div id="wd-people-table">
       {showDetails && (
