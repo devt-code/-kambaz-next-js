@@ -150,7 +150,7 @@ export default function QuizDetails() {
         <h3>
           {quiz.title}{" "}
           {isFaculty && (
-            !quiz.published ? (
+            quiz.published ? (
               <Badge bg="success">Published</Badge>
             ) : (
               <Badge bg="secondary">Unpublished</Badge>
