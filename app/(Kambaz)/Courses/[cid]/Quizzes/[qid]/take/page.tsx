@@ -1,18 +1,15 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Alert, Button, Card, ProgressBar } from "react-bootstrap";
+import { Alert, Button, Card } from "react-bootstrap";
 import * as api from "../../client";
 import type {
-  Attempt,
   AttemptAnswerPayload,
   Question,
   Quiz,
 } from "../../types";
-import GreenCheckmark from "../../GreenCheckmark";
-import RedXMark from "../../RedXMark";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -27,13 +24,13 @@ export default function QuizTake() {
   const router = useRouter();
   const params = useParams();
   const qid = params.qid as string;
+  const cid = params.cid as string;
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<
     Record<string, string | number | boolean>
   >({});
-  const [submitted, setSubmitted] = useState<Attempt | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [step, setStep] = useState(0);
@@ -91,27 +88,8 @@ export default function QuizTake() {
     }
   }, [quiz, unlocked, remainingSec]);
 
-  // Countdown with auto-submit
-  useEffect(() => {
-    if (remainingSec == null || submitted) return;
-    if (remainingSec <= 0) {
-      onSubmit();
-      return;
-    }
-    const id = setInterval(
-      () => setRemainingSec((s) => (s == null ? s : s - 1)),
-      1000
-    );
-    return () => clearInterval(id);
-  }, [remainingSec, submitted]);
-
-  const total = useMemo(
-    () => questions.reduce((acc, q) => acc + (q.points || 0), 0),
-    [questions]
-  );
-
   // Submit quiz
-  async function onSubmit() {
+  const onSubmit = useCallback(async () => {
     if (!qid) return;
 
     if (quiz?.accessCode && access.trim() !== quiz.accessCode.trim()) {
@@ -124,86 +102,33 @@ export default function QuizTake() {
     );
 
     try {
-      const a = await api.submitAttempt(qid, payload);
-      setSubmitted(a);
+      await api.submitAttempt(qid, payload);
       setError(null);
+      // Redirect to results page after successful submission
+      router.push(`/Courses/${cid}/Quizzes/${qid}/results`);
     } catch (e: any) {
       setError(e?.response?.data?.message || "Submit failed");
     }
-  }
+  }, [qid, cid, quiz?.accessCode, access, answers, router]);
+
+  // Countdown with auto-submit
+  useEffect(() => {
+    if (remainingSec == null) return;
+    if (remainingSec <= 0) {
+      onSubmit();
+      return;
+    }
+    const id = setInterval(
+      () => setRemainingSec((s) => (s == null ? s : s - 1)),
+      1000
+    );
+    return () => clearInterval(id);
+  }, [remainingSec, onSubmit]);
 
   if (!quiz) return null;
 
-  // After submit
-  if (submitted) {
-    return (
-      <div className="container mt-3">
-        <h3>{quiz.title} — Results</h3>
-        <Alert variant="success">
-          Score: <strong>{submitted.score}</strong> / {total}
-        </Alert>
-
-        {submitted.answers.map((ans, i) => {
-          const q = questions.find((qq) => qq._id === ans.question) as Question;
-
-          return (
-            <Card
-              key={ans.question}
-              className="mb-3"
-              style={{
-                borderLeft: `6px solid ${
-                  ans.isCorrect ? "var(--bs-success)" : "var(--bs-danger)"
-                }`,
-              }}
-            >
-              <div className="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>Q{i + 1}.</strong> {q?.title}
-                </div>
-                <div className="text-muted small">{q?.points} pts</div>
-              </div>
-
-              <div
-                className="p-3 border-bottom"
-                dangerouslySetInnerHTML={{ __html: q?.questionHtml || "" }}
-              />
-
-              <div className="p-3">
-                <>
-                  {ans.isCorrect ? (
-                    <div className="align-items-center">
-                      <GreenCheckmark />
-                      <span>Correct</span>
-                    </div>
-                  ) : (
-                    <div className="align-items-center">
-                      <RedXMark />
-                      <span>Incorrect</span>
-                    </div>
-                  )}
-                </>
-              </div>
-            </Card>
-          );
-        })}
-
-        <div className="d-flex gap-2">
-          <Button variant="secondary" onClick={() => router.push(`../${qid}`)}>
-            Back to Details
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   const oneAtATime = quiz.oneQuestionAtATime;
   const toRender = oneAtATime ? [questions[step]].filter(Boolean) : questions;
-
-  const progress = oneAtATime
-    ? Math.round(
-        ((questions.length ? step : 0) / (questions.length || 1)) * 100
-      )
-    : Math.round((Object.keys(answers).length / (questions.length || 1)) * 100);
 
   return (
     <div className="container mt-3">
@@ -261,10 +186,6 @@ export default function QuizTake() {
       )}
 
       {unlocked && error && <Alert variant="danger">{error}</Alert>}
-
-      {unlocked && oneAtATime && (
-        <ProgressBar now={progress} className="mb-3" />
-      )}
 
       {/* QUESTIONS */}
       {unlocked &&
