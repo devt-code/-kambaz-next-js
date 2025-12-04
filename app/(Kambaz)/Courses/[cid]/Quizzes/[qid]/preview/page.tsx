@@ -1,9 +1,3 @@
-// "use client";
-// import QuizPreview from "../../Preview";
-
-// export default function Page() {
-//   return <QuizPreview />;
-// }
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -27,17 +21,14 @@ export default function QuizPreview() {
     results: Record<string, boolean>;
   } | null>(null);
 
-  // Preview-only controls
   const [revealCorrect, setRevealCorrect] = useState(false);
   const [bypassCode, setBypassCode] = useState(false);
 
-  // Student-like behavior
   const [step, setStep] = useState(0);
   const [access, setAccess] = useState("");
   const [remainingSec, setRemainingSec] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load quiz
   useEffect(() => {
     (async () => {
       if (!qid) return;
@@ -58,7 +49,6 @@ export default function QuizPreview() {
     bypassCode ||
     (quiz && access.trim() === quiz.accessCode.trim());
 
-  // Timer (preview only)
   useEffect(() => {
     if (!quiz) return;
     if (
@@ -193,7 +183,6 @@ export default function QuizPreview() {
         </div>
       </div>
 
-      {/* ACCESS CODE UI */}
       {requiresCode && !unlocked && (
         <>
           {error && (
@@ -223,7 +212,6 @@ export default function QuizPreview() {
         </>
       )}
 
-      {/* TIMER */}
       {unlocked && remainingSec != null && (
         <div className="small text-muted mb-2">
           ⏳ Time left:{" "}
@@ -240,7 +228,6 @@ export default function QuizPreview() {
         <ProgressBar now={progress} className="mb-3" />
       )}
 
-      {/* QUESTIONS */}
       {unlocked &&
         toRender.map((q, i) => (
           <Card key={q._id} className="mb-3">
@@ -256,9 +243,7 @@ export default function QuizPreview() {
               dangerouslySetInnerHTML={{ __html: q.questionHtml || "" }}
             />
 
-            {/* Answer UI */}
             <div className="p-3">
-              {/* MCQ */}
               {q.type === "MCQ" &&
                 (q.choices || []).map((c, idx) => {
                   const isCorrect = !!c.correct;
@@ -283,7 +268,6 @@ export default function QuizPreview() {
                   );
                 })}
 
-              {/* TRUE/FALSE */}
               {q.type === "TRUE_FALSE" && (
                 <div className="d-flex gap-4">
                   <label className="form-check d-flex align-items-center gap-2">
@@ -317,7 +301,6 @@ export default function QuizPreview() {
                 </div>
               )}
 
-              {/* FILL_BLANK */}
               {q.type === "FILL_BLANK" && (
                 <input
                   className="form-control"
@@ -327,7 +310,6 @@ export default function QuizPreview() {
                 />
               )}
 
-              {/* Instant correctness */}
               {graded && (
                 <div className="mt-2">
                   {graded.results[q._id] ? (
@@ -341,7 +323,6 @@ export default function QuizPreview() {
           </Card>
         ))}
 
-      {/* One-at-a-time Navigation */}
       {unlocked && oneAtATime && (
         <div className="d-flex gap-2">
           <Button
@@ -364,7 +345,6 @@ export default function QuizPreview() {
         </div>
       )}
 
-      {/* Summary */}
       {graded && (
         <Alert variant="info" className="mt-3">
           Preview score: <strong>{graded.score}</strong> / {total}

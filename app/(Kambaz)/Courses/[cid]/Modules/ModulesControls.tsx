@@ -34,7 +34,6 @@ export default function ModulesControls({
 
   return (
     <div id="wd-modules-controls" className="text-nowrap">
-      {/* ADD MODULE BUTTON */}
       {isOtherUser && (
         <Button
           variant="danger"
@@ -51,7 +50,6 @@ export default function ModulesControls({
         </Button>
       )}
 
-      {/* PUBLISH DROPDOWN */}
       <Dropdown className="float-end me-2">
         <DropdownToggle variant="secondary" size="lg" id="wd-publish-all-btn">
           <GreenCheckmark /> Publish All
@@ -80,7 +78,6 @@ export default function ModulesControls({
         </DropdownMenu>
       </Dropdown>
 
-      {/* VIEW PROGRESS */}
       <Button
         variant="secondary"
         size="lg"
@@ -90,7 +87,6 @@ export default function ModulesControls({
         View Progress
       </Button>
 
-      {/* COLLAPSE ALL */}
       <Button
         variant="secondary"
         size="lg"
@@ -100,7 +96,6 @@ export default function ModulesControls({
         Collapse All
       </Button>
 
-      {/* MODULE EDITOR MODAL (only for non-students) */}
       {isOtherUser && (
         <ModuleEditor
           show={show}

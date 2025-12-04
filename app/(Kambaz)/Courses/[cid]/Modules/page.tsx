@@ -2,7 +2,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-// import * as db from "../../../Database";
 import * as client from "../../client";
 import { FormControl, ListGroup, ListGroupItem } from "react-bootstrap";
 import ModulesControls from "./ModulesControls";

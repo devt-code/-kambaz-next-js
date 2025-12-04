@@ -181,7 +181,6 @@ export default function QuizList() {
                 className="d-flex justify-content-between align-items-start"
                 style={{ borderLeft: "4px solid var(--bs-success)" }}
               >
-                {/* LEFT SECTION */}
                 <div className="d-flex align-items-start">
                   <IoRocketOutline
                     style={{
@@ -208,7 +207,6 @@ export default function QuizList() {
                   </div>
                 </div>
 
-                {/* RIGHT SECTION */}
                 <div className="d-flex align-items-center">
                   {isFaculty && (
                     <>

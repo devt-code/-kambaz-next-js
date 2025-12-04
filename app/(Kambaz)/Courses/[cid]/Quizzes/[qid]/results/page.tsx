@@ -20,7 +20,6 @@ export default function QuizResults() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load quiz, questions, and last attempt
   useEffect(() => {
     (async () => {
       if (!qid) return;

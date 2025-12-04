@@ -50,22 +50,12 @@ export const findModulesForCourse = async (courseId: string) => {
   return response.data;
 };
 
-// export const deleteModule = async (moduleId: string) => {
-//   const response = await axios.delete(`${MODULES_API}/${moduleId}`);
-//   return response.data;
-// };
-
 export const deleteModule = async (courseId: string, moduleId: string) => {
   const response = await axios.delete(
     `${COURSES_API}/${courseId}/modules/${moduleId}`
   );
   return response.data;
 };
-
-// export const updateModule = async (module: any) => {
-//   const { data } = await axios.put(`${MODULES_API}/${module._id}`, module);
-//   return data;
-// };
 
 export const updateModule = async (courseId: string, module: any) => {
   const { data } = await axios.put(

@@ -1,10 +1,3 @@
-// "use client";
-// import QuizDetails from "../Details";
-
-// export default function Page() {
-//   return <QuizDetails />;
-// }
-
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -24,9 +17,8 @@ import * as api from "../client";
 import { availabilityLabel, formatDateTime, sumPoints } from "../types";
 import type { Attempt, Question, Quiz, User } from "../types";
 
-import * as userClient from "../../../../Account/client"; // KEEP THIS — your actual user client
+import * as userClient from "../../../../Account/client";
 
-// minimal shape for mapping assigned student IDs -> names
 type Student = {
   _id: string;
   firstName?: string;
@@ -47,7 +39,6 @@ export default function QuizDetails() {
 
   const [students, setStudents] = useState<Student[]>([]);
 
-  // Load profile, quiz, questions, last attempt
   useEffect(() => {
     (async () => {
       try {
@@ -68,7 +59,6 @@ export default function QuizDetails() {
     })();
   }, [qid]);
 
-  // Load student list if needed
   useEffect(() => {
     (async () => {
       const scope = (quiz as any)?.assignScope as
@@ -95,7 +85,6 @@ export default function QuizDetails() {
   const isFaculty = me?.role === "FACULTY";
   const total = sumPoints(questions);
 
-  // Availability window
   const now = new Date();
   const withinWindow =
     quiz.availableFrom &&
@@ -103,7 +92,6 @@ export default function QuizDetails() {
     now >= new Date(quiz.availableFrom) &&
     now <= new Date(quiz.availableUntil);
 
-  // Attempts exhausted?
   const lastNum = (lastAttempt as any)?.attemptNumber as number | undefined;
   const attemptsExhausted =
     (!quiz.multipleAttempts && !!lastAttempt) ||
@@ -114,12 +102,10 @@ export default function QuizDetails() {
 
   const canStart = withinWindow && !!quiz.published && !attemptsExhausted;
 
-  // Dates
   const dueStr = formatDateTime(quiz.due);
   const fromStr = formatDateTime(quiz.availableFrom);
   const untilStr = formatDateTime(quiz.availableUntil);
 
-  // Assign To
   const assignScope =
     ((quiz as any)?.assignScope as "EVERYONE" | "SOME" | undefined) ??
     "EVERYONE";
@@ -195,7 +181,12 @@ export default function QuizDetails() {
               <strong>{quiz.shuffleAnswers ? "Yes" : "No"}</strong>
             </ListGroup.Item>
             <ListGroup.Item>
-              Time Limit: <strong>{quiz.timeLimitMinutes} minutes</strong>
+              Time Limit:{" "}
+              <strong>
+                {quiz.setTimeLimit && quiz.timeLimitMinutes
+                  ? `${quiz.timeLimitMinutes} minutes`
+                  : "No time limit"}
+              </strong>
             </ListGroup.Item>
             <ListGroup.Item>
               Multiple Attempts:{" "}
@@ -224,7 +215,6 @@ export default function QuizDetails() {
             </ListGroup.Item>
           </ListGroup>
 
-          {/* Bottom fields */}
           <div className="border-top mt-3 pt-3">
             <div className="p-3 border rounded">
               <Row className="g-3">

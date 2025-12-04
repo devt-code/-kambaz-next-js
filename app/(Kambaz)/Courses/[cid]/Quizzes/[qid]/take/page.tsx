@@ -10,6 +10,7 @@ import type {
   Question,
   Quiz,
 } from "../../types";
+import { MdOutlineTimer } from "react-icons/md";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -41,7 +42,6 @@ export default function QuizTake() {
     Record<string, number[]>
   >({});
 
-  // Load quiz data
   useEffect(() => {
     (async () => {
       if (!qid) return;
@@ -75,7 +75,6 @@ export default function QuizTake() {
   const unlocked =
     !requiresCode || (quiz && access.trim() === quiz.accessCode.trim());
 
-  // Start timer
   useEffect(() => {
     if (!quiz) return;
     if (
@@ -88,7 +87,6 @@ export default function QuizTake() {
     }
   }, [quiz, unlocked, remainingSec]);
 
-  // Submit quiz
   const onSubmit = useCallback(async () => {
     if (!qid) return;
 
@@ -104,14 +102,12 @@ export default function QuizTake() {
     try {
       await api.submitAttempt(qid, payload);
       setError(null);
-      // Redirect to results page after successful submission
       router.push(`/Courses/${cid}/Quizzes/${qid}/results`);
     } catch (e: any) {
       setError(e?.response?.data?.message || "Submit failed");
     }
   }, [qid, cid, quiz?.accessCode, access, answers, router]);
 
-  // Countdown with auto-submit
   useEffect(() => {
     if (remainingSec == null) return;
     if (remainingSec <= 0) {
@@ -134,7 +130,6 @@ export default function QuizTake() {
     <div className="container mt-3">
       <h3>Take Quiz: {quiz.title}</h3>
 
-      {/* ACCESS CODE */}
       {requiresCode && !unlocked && (
         <>
           {error && (
@@ -174,10 +169,10 @@ export default function QuizTake() {
         </>
       )}
 
-      {/* TIMER */}
       {unlocked && remainingSec != null && (
-        <div className="small text-muted mb-2">
-          ⏳ Time left:{" "}
+        <div className="small text-muted mb-2 align-items-center">
+          <MdOutlineTimer className="me-2" />
+           Time left:{" "}
           <strong>
             {Math.floor(remainingSec / 60)}:
             {String(remainingSec % 60).padStart(2, "0")}
@@ -187,7 +182,6 @@ export default function QuizTake() {
 
       {unlocked && error && <Alert variant="danger">{error}</Alert>}
 
-      {/* QUESTIONS */}
       {unlocked &&
         toRender.map((q, i) => {
           const order =
@@ -278,7 +272,6 @@ export default function QuizTake() {
           );
         })}
 
-      {/* NAVIGATION */}
       {unlocked && oneAtATime && (
         <div className="d-flex gap-2">
           <Button
@@ -301,7 +294,6 @@ export default function QuizTake() {
         </div>
       )}
 
-      {/* SUBMIT */}
       {unlocked && (
         <div className="mt-3">
           <Button variant="secondary" onClick={onSubmit}>

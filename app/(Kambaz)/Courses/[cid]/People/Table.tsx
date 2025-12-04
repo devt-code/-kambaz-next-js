@@ -3,8 +3,6 @@
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 import React, { useState } from "react";
-// import { useParams } from "next/navigation";
-// import * as db from "../../../../Database";
 
 import PeopleDetails from "./Details";
 
@@ -15,10 +13,6 @@ export default function PeopleTable({
   users?: any[];
   fetchUsers: () => void;
 }) {
-  // const { cid } = useParams();
-  // const { users, enrollments } = db;
-  // console.log("From where needed:" + users);
-
   const [showDetails, setShowDetails] = useState(false);
   const [showUserId, setShowUserId] = useState<string | null>(null);
 

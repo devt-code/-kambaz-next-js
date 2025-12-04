@@ -1,11 +1,4 @@
-// "use client";
-// import QuizEditor from "../../Editor";
-
-// export default function Page() {
-//   return <QuizEditor />;
-// }
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// QuizEditor.tsx — Next.js version (NO react-router-dom)
 
 "use client";
 
@@ -28,8 +21,6 @@ import * as api from "../../client";
 import { sumPoints } from "../../types";
 import type { Question, Quiz, QuizType } from "../../types";
 
-/* ============================= Types ============================= */
-
 const QUIZ_TYPES: { value: QuizType; label: string }[] = [
   { value: "GRADED_QUIZ", label: "Graded Quiz" },
   { value: "PRACTICE_QUIZ", label: "Practice Quiz" },
@@ -44,8 +35,6 @@ type Student = {
   username?: string;
   email?: string;
 };
-
-/* ====================== Dependency-free Editor ====================== */
 
 function RichHtmlEditor({
   value,
@@ -155,8 +144,6 @@ function RichHtmlEditor({
   );
 }
 
-/* ============================= Main Page ============================= */
-
 export default function QuizEditor() {
   const router = useRouter();
   const params = useParams();
@@ -170,7 +157,6 @@ export default function QuizEditor() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Assign
   const [assignScope, setAssignScope] = useState<"EVERYONE" | "SOME">(
     "EVERYONE"
   );
@@ -294,7 +280,6 @@ export default function QuizEditor() {
 
           <Col sm={12}>
             <Tab.Content>
-              {/* ========= DETAILS TAB ========= */}
               <Tab.Pane eventKey="details">
                 <Card className="p-3">
                   <Form>
@@ -366,29 +351,36 @@ export default function QuizEditor() {
                           <Form.Check
                             type="checkbox"
                             label="Time Limit"
-                            checked={quiz.setTimeLimit}
+                            checked={quiz.setTimeLimit || false}
                             onChange={(e) =>
                               setQuiz({
                                 ...quiz,
                                 setTimeLimit: e.target.checked,
+                                timeLimitMinutes: e.target.checked
+                                  ? quiz.timeLimitMinutes || 20
+                                  : null,
                               })
                             }
                           />
 
-                          <Form.Group>
-                            <Form.Label>Time Limit (minutes)</Form.Label>
-                            <Form.Control
-                              type="number"
-                              value={quiz.timeLimitMinutes}
-                              disabled={!quiz.setTimeLimit}
-                              onChange={(e) =>
-                                setQuiz({
-                                  ...quiz,
-                                  timeLimitMinutes: Number(e.target.value),
-                                })
-                              }
-                            />
-                          </Form.Group>
+                          {quiz.setTimeLimit && (
+                            <Form.Group>
+                              <Form.Label>Time Limit (minutes)</Form.Label>
+                              <Form.Control
+                                type="number"
+                                min="1"
+                                value={quiz.timeLimitMinutes || ""}
+                                onChange={(e) =>
+                                  setQuiz({
+                                    ...quiz,
+                                    timeLimitMinutes: e.target.value
+                                      ? Number(e.target.value)
+                                      : null,
+                                  })
+                                }
+                              />
+                            </Form.Group>
+                          )}
 
                           <Form.Check
                             type="checkbox"
@@ -576,7 +568,6 @@ export default function QuizEditor() {
                 </Card>
               </Tab.Pane>
 
-              {/* ========= QUESTIONS TAB ========= */}
               <Tab.Pane eventKey="questions">
                 <Card className="p-3">
                   <div className="d-flex justify-content-between align-items-center mb-2">
@@ -617,8 +608,6 @@ export default function QuizEditor() {
     </div>
   );
 }
-
-/* ======================== Inline Question Editor ======================== */
 
 function QuestionEditor({
   q,

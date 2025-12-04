@@ -12,14 +12,14 @@ export interface Quiz {
   title: string;
   description: string;
   published: boolean;
-  due?: string; // ISO
-  availableFrom?: string; // ISO
-  availableUntil?: string; // ISO
+  due?: string;
+  availableFrom?: string;
+  availableUntil?: string;
   quizType: QuizType;
   assignmentGroup: "Quizzes" | "Exams" | "Assignments" | "Project";
   shuffleAnswers: boolean;
   setTimeLimit: boolean;
-  timeLimitMinutes: number;
+  timeLimitMinutes: number | null;
   multipleAttempts: boolean;
   attemptsAllowed: number;
   showCorrectAnswers: string;
@@ -44,9 +44,9 @@ export interface Question {
   title: string;
   points: number;
   questionHtml: string;
-  choices?: Choice[]; // MCQ
-  correctBoolean?: boolean; // TRUE_FALSE
-  acceptableAnswers?: string[]; // FILL_BLANK
+  choices?: Choice[];
+  correctBoolean?: boolean;
+  acceptableAnswers?: string[];
   order?: number;
 }
 
@@ -56,7 +56,7 @@ export interface AttemptAnswerPayload {
 }
 
 export interface AttemptAnswer {
-  question: string; // question id
+  question: string;
   value: string | number | boolean;
   isCorrect: boolean;
   pointsAwarded: number;

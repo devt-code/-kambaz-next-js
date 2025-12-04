@@ -2,16 +2,16 @@
 import axios from "axios";
 import type { Attempt, AttemptAnswerPayload, Question, Quiz } from "./types";
 
-// const REMOTE_SERVER = import.meta.env.VITE_HTTP_SERVER;
+
 const REMOTE_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_NEW;
 
-/** Single instance that always sends the session cookie (same as Enrollments) */
+
 const api = axios.create({
   baseURL: REMOTE_SERVER,
-  withCredentials: true, // puts connect.sid on every request
+  withCredentials: true,
 });
 
-/** Normalize array-style responses in case your API wraps payloads */
+
 const asArray = <T,>(raw: any, key?: string): T[] => {
   if (Array.isArray(raw)) return raw as T[];
   if (key && Array.isArray(raw?.[key])) return raw[key] as T[];
@@ -19,7 +19,7 @@ const asArray = <T,>(raw: any, key?: string): T[] => {
   return [];
 };
 
-/* ---------- quizzes ---------- */
+
 export const listQuizzes = async (courseId: string): Promise<Quiz[]> => {
   const data = (await api.get(`/api/courses/${courseId}/quizzes`)).data;
   return asArray<Quiz>(data, "quizzes");
@@ -43,7 +43,6 @@ export const publishQuiz = async (quizId: string) =>
 export const unpublishQuiz = async (quizId: string) =>
   (await api.post<Quiz>(`/api/quizzes/${quizId}/unpublish`)).data;
 
-/* ---------- questions ---------- */
 export const listQuestions = async (quizId: string): Promise<Question[]> => {
   const data = (await api.get(`/api/quizzes/${quizId}/questions`)).data;
   return asArray<Question>(data, "questions");
@@ -60,7 +59,6 @@ export const updateQuestion = async (
 export const deleteQuestion = async (questionId: string) =>
   (await api.delete(`/api/questions/${questionId}`)).data;
 
-/* ---------- attempts ---------- */
 export const getLastAttempt = async (quizId: string) =>
   (await api.get<Attempt | null>(`/api/quizzes/${quizId}/attempts/me/last`))
     .data;
