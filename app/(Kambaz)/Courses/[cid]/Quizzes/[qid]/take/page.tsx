@@ -11,6 +11,8 @@ import type {
   Question,
   Quiz,
 } from "../../types";
+import GreenCheckmark from "../../GreenCheckmark";
+import RedXMark from "../../RedXMark";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -167,7 +169,19 @@ export default function QuizTake() {
               />
 
               <div className="p-3">
-                {ans.isCorrect ? "✅ Correct" : "❌ Incorrect"}
+                <>
+                  {ans.isCorrect ? (
+                    <div className="align-items-center">
+                      <GreenCheckmark />
+                      <span>Correct</span>
+                    </div>
+                  ) : (
+                    <div className="align-items-center">
+                      <RedXMark />
+                      <span>Incorrect</span>
+                    </div>
+                  )}
+                </>
               </div>
             </Card>
           );
