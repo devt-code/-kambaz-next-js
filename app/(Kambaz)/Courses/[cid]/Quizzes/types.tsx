@@ -18,6 +18,7 @@ export interface Quiz {
   quizType: QuizType;
   assignmentGroup: "Quizzes" | "Exams" | "Assignments" | "Project";
   shuffleAnswers: boolean;
+  setTimeLimit: boolean;
   timeLimitMinutes: number;
   multipleAttempts: boolean;
   attemptsAllowed: number;

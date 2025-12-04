@@ -131,129 +131,6 @@ function RichHtmlEditor({
 
   return (
     <div className="border rounded">
-      {/* Toolbar */}
-      <div className="d-flex flex-wrap align-items-center gap-2 p-2 border-bottom bg-light">
-        <div className="btn-group">
-          <Button
-            size="sm"
-            variant="outline-secondary"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => exec("undo")}
-          >
-            Undo
-          </Button>
-          <Button
-            size="sm"
-            variant="outline-secondary"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => exec("redo")}
-          >
-            Redo
-          </Button>
-        </div>
-
-        {/* Font */}
-        <Form.Select
-          size="sm"
-          style={{ width: 160 }}
-          onMouseDown={(e) => e.preventDefault()}
-          onChange={(e) => exec("fontName", e.currentTarget.value)}
-          defaultValue=""
-        >
-          <option value="" disabled>
-            Font
-          </option>
-          <option value="Arial">Arial</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Courier New">Courier New</option>
-          <option value="Verdana">Verdana</option>
-        </Form.Select>
-
-        <Form.Select
-          size="sm"
-          style={{ width: 120 }}
-          onMouseDown={(e) => e.preventDefault()}
-          onChange={(e) => exec("fontSize", e.currentTarget.value)}
-          defaultValue=""
-        >
-          <option value="" disabled>
-            Size
-          </option>
-          <option value="2">Small</option>
-          <option value="3">Normal</option>
-          <option value="4">Large</option>
-          <option value="5">X-Large</option>
-        </Form.Select>
-
-        <div className="btn-group">
-          <Button
-            size="sm"
-            variant="outline-secondary"
-            onClick={() => exec("bold")}
-          >
-            B
-          </Button>
-          <Button
-            size="sm"
-            variant="outline-secondary"
-            onClick={() => exec("italic")}
-          >
-            <em>I</em>
-          </Button>
-          <Button
-            size="sm"
-            variant="outline-secondary"
-            onClick={() => exec("underline")}
-          >
-            <u>U</u>
-          </Button>
-          <Button
-            size="sm"
-            variant="outline-secondary"
-            onClick={() => exec("strikeThrough")}
-          >
-            <s>S</s>
-          </Button>
-        </div>
-
-        <div className="d-flex align-items-center gap-1">
-          <Form.Label className="small mb-0">Text</Form.Label>
-          <Form.Control
-            type="color"
-            size="sm"
-            style={{ width: 36, height: 28, padding: 2 }}
-            onChange={(e) => exec("foreColor", e.currentTarget.value)}
-          />
-        </div>
-
-        <Dropdown>
-          <Dropdown.Toggle size="sm" variant="outline-secondary">
-            Insert
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={promptLink}>Link…</Dropdown.Item>
-            <Dropdown.Item onClick={promptImage}>Image…</Dropdown.Item>
-            <Dropdown.Item onClick={promptTable}>Table…</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={() => exec("formatBlock", "BLOCKQUOTE")}>
-              Blockquote
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => exec("formatBlock", "PRE")}>
-              Code Block
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-
-        <Button
-          size="sm"
-          variant="outline-secondary"
-          onClick={() => exec("removeFormat")}
-        >
-          Clear
-        </Button>
-      </div>
-
       <div
         ref={editorRef}
         className="p-2"
@@ -486,11 +363,24 @@ export default function QuizEditor() {
                             </Form.Select>
                           </Form.Group>
 
+                          <Form.Check
+                            type="checkbox"
+                            label="Time Limit"
+                            checked={quiz.setTimeLimit}
+                            onChange={(e) =>
+                              setQuiz({
+                                ...quiz,
+                                setTimeLimit: e.target.checked,
+                              })
+                            }
+                          />
+
                           <Form.Group>
                             <Form.Label>Time Limit (minutes)</Form.Label>
                             <Form.Control
                               type="number"
                               value={quiz.timeLimitMinutes}
+                              disabled={!quiz.setTimeLimit}
                               onChange={(e) =>
                                 setQuiz({
                                   ...quiz,
@@ -501,7 +391,7 @@ export default function QuizEditor() {
                           </Form.Group>
 
                           <Form.Check
-                            type="switch"
+                            type="checkbox"
                             label="Multiple Attempts"
                             checked={quiz.multipleAttempts}
                             onChange={(e) =>
@@ -513,7 +403,7 @@ export default function QuizEditor() {
                           />
 
                           <Form.Group>
-                            <Form.Label>How Many Attempts</Form.Label>
+                            <Form.Label>Attempts Allowed</Form.Label>
                             <Form.Control
                               type="number"
                               value={quiz.attemptsAllowed}
@@ -528,7 +418,7 @@ export default function QuizEditor() {
                           </Form.Group>
 
                           <Form.Check
-                            type="switch"
+                            type="checkbox"
                             label="Shuffle Answers"
                             checked={quiz.shuffleAnswers}
                             onChange={(e) =>
@@ -539,7 +429,7 @@ export default function QuizEditor() {
                             }
                           />
                           <Form.Check
-                            type="switch"
+                            type="checkbox"
                             label="One Question at a Time"
                             checked={quiz.oneQuestionAtATime}
                             onChange={(e) =>
