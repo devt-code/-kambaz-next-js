@@ -9,6 +9,7 @@ import {
   Dropdown,
   Form,
   ListGroup,
+  ListGroupItem,
   Spinner,
 } from "react-bootstrap";
 
@@ -16,6 +17,13 @@ import * as api from "./client";
 import { availabilityLabel, formatDateTime, sumPoints } from "./types";
 import type { Question, Quiz, User } from "./types";
 import * as userClient from "../../../Account/client";
+
+import { IoEllipsisVertical } from "react-icons/io5";
+import GreenCheckmark from "./GreenCheckmark";
+import { FaBan } from "react-icons/fa6";
+import { BsGripVertical } from "react-icons/bs";
+import { IoMdArrowDropdown } from "react-icons/io";
+import { IoRocketOutline } from "react-icons/io5";
 
 type Attempt = { score: number } | null;
 
@@ -73,9 +81,15 @@ export default function QuizList() {
   }, [cid]);
 
   const isFaculty = me?.role === "FACULTY";
+  const isStudent = me?.role === "STUDENT";
 
   const sorted = useMemo(() => {
-    const copy = [...list];
+    let copy;
+    if (isStudent) {
+      copy = list.filter((q) => q.published);
+    } else {
+      copy = [...list];
+    }
     copy.sort((a, b) => {
       if (sortKey === "title") return a.title.localeCompare(b.title);
       const da = a[sortKey] ? new Date(a[sortKey] as any).getTime() : 0;
@@ -135,10 +149,16 @@ export default function QuizList() {
           No quizzes yet. {isFaculty ? "Click + Quiz to add one." : ""}
         </Card>
       ) : (
-        <ListGroup
-          className="rounded-3"
-          style={{ borderLeft: "4px solid var(--bs-success)" }}
-        >
+        <ListGroup>
+          <ListGroupItem className="wd-module p-0 fs-5 border-gray">
+            <div className="wd-title p-3 ps-2 bg-secondary d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center">
+                <BsGripVertical className="me-2 fs-3" />
+                <IoMdArrowDropdown className="me-2 fs-3" />
+                <span>QUIZZES</span>
+              </div>
+            </div>
+          </ListGroupItem>
           {sorted.map((q) => {
             const meta = qMeta[q._id];
             const availability = availabilityLabel(q);
@@ -159,15 +179,20 @@ export default function QuizList() {
               <ListGroup.Item
                 key={q._id}
                 className="d-flex justify-content-between align-items-start"
+                style={{ borderLeft: "4px solid var(--bs-success)" }}
               >
                 {/* LEFT SECTION */}
                 <div className="d-flex align-items-start">
-                  <span
-                    className="me-2 rounded-circle bg-success d-inline-flex align-items-center justify-content-center"
-                    style={{ width: 28, height: 28 }}
-                  >
-                    <span style={{ fontSize: 14 }}>🚀</span>
-                  </span>
+                  <IoRocketOutline
+                    style={{
+                      width: 28,
+                      height: 28,
+                      color: "var(--bs-success)",
+                      alignContent: "center",
+                      marginTop: 5,
+                      marginRight: 10,
+                    }}
+                  />
 
                   <div>
                     <a
@@ -186,14 +211,16 @@ export default function QuizList() {
                 {/* RIGHT SECTION */}
                 <div className="d-flex align-items-center">
                   {isFaculty && (
-                    <Button
-                      size="sm"
-                      variant={q.published ? "outline-secondary" : "success"}
-                      className="me-2 px-3"
-                      onClick={() => togglePublish(q)}
-                    >
-                      {q.published ? "Unpublish" : "Publish"}
-                    </Button>
+                    <>
+                      {q.published ? (
+                        <GreenCheckmark />
+                      ) : (
+                        <FaBan
+                          className="position-relative me-2"
+                          style={{ bottom: "1px", color: "var(--bs-danger)" }}
+                        />
+                      )}
+                    </>
                   )}
 
                   <Dropdown align="end">
@@ -202,7 +229,7 @@ export default function QuizList() {
                       size="sm"
                       className="border-0"
                     >
-                      ⋮
+                      <IoEllipsisVertical className="fs-4" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item

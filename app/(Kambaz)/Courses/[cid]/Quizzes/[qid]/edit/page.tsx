@@ -677,7 +677,7 @@ export default function QuizEditor() {
                     </Button>
                     <Button
                       disabled={saving}
-                      variant="danger"
+                      variant="success"
                       onClick={publishAndExit}
                     >
                       Save & Publish
