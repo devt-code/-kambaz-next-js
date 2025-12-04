@@ -149,10 +149,12 @@ export default function QuizDetails() {
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h3>
           {quiz.title}{" "}
-          {quiz.published ? (
-            <Badge bg="success">Published</Badge>
-          ) : (
-            <Badge bg="secondary">Unpublished</Badge>
+          {isFaculty && (
+            !quiz.published ? (
+              <Badge bg="success">Published</Badge>
+            ) : (
+              <Badge bg="secondary">Unpublished</Badge>
+            )
           )}
         </h3>
 
@@ -263,7 +265,7 @@ export default function QuizDetails() {
         (
           <div className="d-flex align-items-center gap-3">
             {canStart && (
-              <Button onClick={() => router.push(`./${qid}/preview`)}>
+              <Button onClick={() => router.push(`./${qid}/take`)}>
                 Start Quiz
               </Button>
             )}
