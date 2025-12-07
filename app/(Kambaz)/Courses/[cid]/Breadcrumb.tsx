@@ -12,7 +12,7 @@ export default function Breadcrumb({
   const lastSegment = segments.pop() || "";
   const secondLastSegment = segments[segments.length - 1];
 
-  // If the second-to-last segment is "Assignments" or "Quizzes", use that instead of the UUID
+  
   const displaySegment =
     secondLastSegment === "Assignments" || secondLastSegment === "Quizzes"
       ? secondLastSegment
