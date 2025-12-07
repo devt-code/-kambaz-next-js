@@ -20,7 +20,7 @@ import * as userClient from "../../../Account/client";
 
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
-import { FaBan } from "react-icons/fa6";
+import RedBanIcon from "./RedBan";
 import { BsGripVertical } from "react-icons/bs";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoRocketOutline } from "react-icons/io5";
@@ -209,23 +209,15 @@ export default function QuizList() {
 
                 <div className="d-flex align-items-center">
                   {isFaculty && (
-                    <>
-                      {q.published ? (
-                        <GreenCheckmark />
-                      ) : (
-                        <FaBan
-                          className="position-relative me-2"
-                          style={{ bottom: "1px", color: "var(--bs-danger)" }}
-                        />
-                      )}
-                    </>
+                    <>{q.published ? <GreenCheckmark /> : <RedBanIcon />}</>
                   )}
 
                   <Dropdown align="end">
                     <Dropdown.Toggle
-                      variant="outline-secondary"
+                      variant="outline-link"
                       size="sm"
                       className="border-0"
+                      bsPrefix="dropdown-toggle-no-caret"
                     >
                       <IoEllipsisVertical className="fs-4" />
                     </Dropdown.Toggle>

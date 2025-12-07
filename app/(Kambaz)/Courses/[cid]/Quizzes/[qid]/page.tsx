@@ -39,6 +39,8 @@ export default function QuizDetails() {
 
   const [students, setStudents] = useState<Student[]>([]);
 
+  const [list, setList] = useState<Quiz[]>([]);
+
   useEffect(() => {
     (async () => {
       try {
@@ -86,11 +88,20 @@ export default function QuizDetails() {
   const total = sumPoints(questions);
 
   const now = new Date();
-  const withinWindow =
+
+  console.log("Dates");
+  console.log(quiz.availableFrom);
+  console.log(quiz.availableUntil);
+
+  let withinWindow =
     quiz.availableFrom &&
     quiz.availableUntil &&
     now >= new Date(quiz.availableFrom) &&
     now <= new Date(quiz.availableUntil);
+
+  if (quiz.availableFrom == undefined && quiz.availableUntil == undefined) {
+    withinWindow = true;
+  }
 
   const lastNum = (lastAttempt as any)?.attemptNumber as number | undefined;
   const attemptsExhausted =
@@ -130,21 +141,38 @@ export default function QuizDetails() {
         : "Specific students"
       : "Everyone";
 
+  async function togglePublish(q: Quiz) {
+    const saved = q.published
+      ? await api.unpublishQuiz(q._id)
+      : await api.publishQuiz(q._id);
+
+    setQuiz(saved);
+    setList((prev) => prev.map((x) => (x._id === q._id ? saved : x)));
+  }
+
   return (
     <div className="container mt-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h3>
           {quiz.title}{" "}
-          {isFaculty && (
+          {/* {isFaculty && (
             quiz.published ? (
               <Badge bg="success">Published</Badge>
             ) : (
               <Badge bg="secondary">Unpublished</Badge>
             )
-          )}
+          )} */}
         </h3>
 
         <div className="d-flex gap-2">
+          {isFaculty && (
+            <Button
+              variant={quiz.published ? "danger" : "success"}
+              onClick={() => togglePublish(quiz)}
+            >
+              {quiz.published ? "Unpublish" : "Publish"}
+            </Button>
+          )}
           {isFaculty && (
             <Button
               variant="outline-secondary"

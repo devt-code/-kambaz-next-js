@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Alert, Button, Card, ProgressBar, Form } from "react-bootstrap";
 import * as api from "../../client";
 import type { Question, Quiz } from "../../types";
+import { MdOutlineTimer } from "react-icons/md";
 
 export default function QuizPreview() {
   const params = useParams();
@@ -141,7 +142,7 @@ export default function QuizPreview() {
 
         <div className="d-flex flex-wrap gap-2">
           <Form.Check
-            type="switch"
+            type="checkbox"
             id="reveal-correct"
             label="Reveal correct answers"
             checked={revealCorrect}
@@ -164,14 +165,14 @@ export default function QuizPreview() {
           </Button>
 
           <Button
-            variant={quiz.published ? "outline-secondary" : "success"}
+            variant={quiz.published ? "danger" : "success"}
             onClick={togglePublish}
           >
             {quiz.published ? "Unpublish" : "Publish"}
           </Button>
 
           <Button
-            variant="outline-primary"
+            variant="primary"
             onClick={() => router.push(`../${qid}/edit`)}
           >
             Edit Quiz
@@ -214,7 +215,8 @@ export default function QuizPreview() {
 
       {unlocked && remainingSec != null && (
         <div className="small text-muted mb-2">
-          ⏳ Time left:{" "}
+          <MdOutlineTimer className="me-2" />
+          Time left:{" "}
           <strong>
             {Math.floor(remainingSec / 60)}:
             {String(remainingSec % 60).padStart(2, "0")}
@@ -223,10 +225,6 @@ export default function QuizPreview() {
       )}
 
       {unlocked && error && <Alert variant="warning">{error}</Alert>}
-
-      {unlocked && oneAtATime && (
-        <ProgressBar now={progress} className="mb-3" />
-      )}
 
       {unlocked &&
         toRender.map((q, i) => (
@@ -244,10 +242,9 @@ export default function QuizPreview() {
             />
 
             <div className="p-3">
-              {q.type === "MCQ" &&
-                (q.choices || []).map((c, idx) => {
-                  const isCorrect = !!c.correct;
-                  return (
+              {q.type === "MCQ" && (
+                <>
+                  {(q.choices || []).map((c, idx) => (
                     <label
                       key={idx}
                       className="form-check d-flex align-items-center gap-2"
@@ -260,54 +257,74 @@ export default function QuizPreview() {
                           setAnswers((a) => ({ ...a, [q._id]: idx }))
                         }
                       />
-                      <span>
-                        {c.text}
-                        {revealCorrect && isCorrect && " ✅"}
-                      </span>
+                      <span>{c.text}</span>
                     </label>
-                  );
-                })}
+                  ))}
+
+                  {revealCorrect && (
+                    <div className="text-success mt-2 small">
+                      Correct Answer:{" "}
+                      <strong>
+                        {(q.choices || []).find((c) => c.correct)?.text || "—"}
+                      </strong>
+                    </div>
+                  )}
+                </>
+              )}
 
               {q.type === "TRUE_FALSE" && (
-                <div className="d-flex gap-4">
-                  <label className="form-check d-flex align-items-center gap-2">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name={`q-${q._id}`}
-                      onChange={() =>
-                        setAnswers((a) => ({ ...a, [q._id]: true }))
-                      }
-                    />
-                    <span>
-                      True {revealCorrect && q.correctBoolean === true && "✅"}
-                    </span>
-                  </label>
+                <>
+                  <div className="d-flex gap-4">
+                    <label className="form-check d-flex align-items-center gap-2">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name={`q-${q._id}`}
+                        onChange={() =>
+                          setAnswers((a) => ({ ...a, [q._id]: true }))
+                        }
+                      />
+                      <span>True</span>
+                    </label>
 
-                  <label className="form-check d-flex align-items-center gap-2">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name={`q-${q._id}`}
-                      onChange={() =>
-                        setAnswers((a) => ({ ...a, [q._id]: false }))
-                      }
-                    />
-                    <span>
-                      False{" "}
-                      {revealCorrect && q.correctBoolean === false && "✅"}
-                    </span>
-                  </label>
-                </div>
+                    <label className="form-check d-flex align-items-center gap-2">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name={`q-${q._id}`}
+                        onChange={() =>
+                          setAnswers((a) => ({ ...a, [q._id]: false }))
+                        }
+                      />
+                      <span>False</span>
+                    </label>
+                  </div>
+
+                  {revealCorrect && (
+                    <div className="text-success mt-2 small">
+                      Correct Answer:{" "}
+                      <strong>{q.correctBoolean ? "True" : "False"}</strong>
+                    </div>
+                  )}
+                </>
               )}
 
               {q.type === "FILL_BLANK" && (
-                <input
-                  className="form-control"
-                  onChange={(e) =>
-                    setAnswers((a) => ({ ...a, [q._id]: e.target.value }))
-                  }
-                />
+                <>
+                  <input
+                    className="form-control"
+                    onChange={(e) =>
+                      setAnswers((a) => ({ ...a, [q._id]: e.target.value }))
+                    }
+                  />
+
+                  {revealCorrect && (
+                    <div className="text-success mt-2 small">
+                      Correct answers:{" "}
+                      <strong>{(q.acceptableAnswers || []).join(", ")}</strong>
+                    </div>
+                  )}
+                </>
               )}
 
               {graded && (
