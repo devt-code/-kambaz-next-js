@@ -2,15 +2,12 @@
 import axios from "axios";
 import type { Attempt, AttemptAnswerPayload, Question, Quiz } from "./types";
 
-
-const REMOTE_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_NEW;
-
+const REMOTE_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_PROJECT;
 
 const api = axios.create({
   baseURL: REMOTE_SERVER,
   withCredentials: true,
 });
-
 
 const asArray = <T,>(raw: any, key?: string): T[] => {
   if (Array.isArray(raw)) return raw as T[];
@@ -18,7 +15,6 @@ const asArray = <T,>(raw: any, key?: string): T[] => {
   if (Array.isArray(raw?.data)) return raw.data as T[];
   return [];
 };
-
 
 export const listQuizzes = async (courseId: string): Promise<Quiz[]> => {
   const data = (await api.get(`/api/courses/${courseId}/quizzes`)).data;
