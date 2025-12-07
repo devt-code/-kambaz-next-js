@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
 const HTTP_SERVER =
-  process.env.NEXT_PUBLIC_HTTP_SERVER_NEW ?? "http://localhost:4000";
+  process.env.NEXT_PUBLIC_HTTP_SERVER_PROJECT ?? "http://localhost:4000";
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
 

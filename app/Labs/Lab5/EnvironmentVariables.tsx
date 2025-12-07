@@ -1,4 +1,4 @@
-const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_NEW;
+const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_PROJECT;
 export default function EnvironmentVariables() {
   return (
     <div id="wd-environment-variables">

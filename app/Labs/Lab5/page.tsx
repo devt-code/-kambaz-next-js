@@ -8,7 +8,7 @@ import HttpClient from "./HttpClient";
 import WorkingWithObjectsAsynchronously from "./WorkingWithObjectsAsynchronously";
 import WorkingWithArraysAsynchronously from "./WorkingWithArraysAsynchronously";
 
-const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_NEW;
+const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_PROJECT;
 export default function Lab5() {
   return (
     <div id="wd-lab5">

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FormControl } from "react-bootstrap";
-const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_NEW;
+const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER_PROJECT;
 
 export default function ModuleObject() {
   const [module, setModule] = useState({
