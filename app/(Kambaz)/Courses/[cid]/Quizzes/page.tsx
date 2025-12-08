@@ -41,7 +41,7 @@ export default function QuizList() {
   >({});
   const [lastByQuiz, setLastByQuiz] = useState<Record<string, Attempt>>({});
   const [sortKey, setSortKey] = useState<"title" | "due" | "availableFrom">(
-    "title"
+    "availableFrom"
   );
 
   useEffect(() => {
